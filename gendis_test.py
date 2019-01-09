@@ -15,8 +15,8 @@ tr_gen.data_generation(n_test=10)
 # Read in the datafiles
 dex = DataExtractor()
 train_df, test_df = dex.train_test_dataframes()
-dex.define_csv(dataset=train_df, ts_class="Bearing", file="train.csv")
-dex.define_csv(dataset=test_df, ts_class="Bearing", file="test.csv")
+dex.define_csv(dataset=train_df, ts_class=["Bearing", "Speed"], file="train.csv")
+dex.define_csv(dataset=test_df, ts_class=["Bearing", "Speed"], file="test.csv")
 
 x_train, y_train, x_test, y_test = dex.load_datasets()
 genetic_extractor = GeneticExtractor(population_size=20, iterations=25, verbose=True,

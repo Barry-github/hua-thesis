@@ -49,34 +49,44 @@ class DataExtractor:
         print("Success")
         return train_df, test_df
 
-    def define_csv(self, dataset, ts_class, file):
-        print("\nCreating {0:s} ".format(file))
-        class_list = ["Timestamp", ts_class]
-        x_file = "x_"+file
-        y_file = "y_"+file
-        x_ds = []
-        y_ds = []
-        for sl in dataset:
-            x_ds.append(sl[class_list[0]].values)
-            x_ds.append(sl[class_list[1]].values)
-            y_ds.append(1)
-            y_ds.append(2)
+    @staticmethod
+    def define_csv(dataset, ts_class, file):
+        if DataExtractor.is_right_format(ts_class):
+            print("\nCreating {0:s} ".format(file))
+            class_list = ts_class
+            x_file = "x_" + file
+            y_file = "y_" + file
+            x_ds = []
+            y_ds = []
+            for sl in dataset:
+                if DataExtractor.classes_exist(ts_class,sl):
+                    x_ds.append(sl[class_list[0]].values)
+                    x_ds.append(sl[class_list[1]].values)
+                    y_ds.append(1)
+                    y_ds.append(2)
+                else:
+                    print("error. not such classes in a dataframe of given dataset")
+                    break
 
-        x_ds = np.array(x_ds)
-        y_ds = np.array(y_ds)
-        x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
-        y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
-        with open(x_file, 'wb') as x_csv:
-            for idx, d in enumerate(x_ds):
-                d = timestamp_converter(d)
-                x_ds[idx] = d
-            np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
+            x_ds = np.array(x_ds)
+            y_ds = np.array(y_ds)
+            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
+            y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
+            with open(x_file, 'wb') as x_csv:
+                for idx, d in enumerate(x_ds):
+                    d = timestamp_converter(d)
+                    x_ds[idx] = d
+                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
 
-        np.savetxt(y_file, y_ds, delimiter=",", fmt='%f')
-        x_csv.close()
-        print("Success")
+            np.savetxt(y_file, y_ds, delimiter=",", fmt='%f')
+            x_csv.close()
+            print("Success")
+        else:
+            print("wrong format for requested classes. needed a list with 2 string cells")
 
-    def load_datasets(self):
+    @staticmethod
+    def load_datasets():
+
         print("\nLoading the csv files to the appropriate train and test arrays(nparrays)")
         x_train = pd.read_csv("x_train.csv", header=None, skip_blank_lines=True).get_values()
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
@@ -94,3 +104,21 @@ class DataExtractor:
 
     def set_listdir(self, listdir):
         self.listdir = listdir
+
+    @staticmethod
+    def is_right_format(ts_class):
+        if len(ts_class) == 2:
+            if isinstance(ts_class[0], str) and isinstance(ts_class[1], str):
+                return True
+            else:
+                return False
+
+    @staticmethod
+    def classes_exist(ts_class, df):
+        list_col = list(df)
+        if ts_class[0] in list_col and ts_class[1] in list_col:
+            return True
+        else:
+            return False
+
+
