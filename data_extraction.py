@@ -13,6 +13,7 @@ class DataExtractor:
         self.listdir = []
         self.movements = []
 
+
     def read_datasets(self):
         print("\nReading the data files")
         self.movements = movements()

@@ -1,5 +1,5 @@
 import pandas as pd
-import csv, os
+import csv, os , shutil
 from random import shuffle, choice
 from pandas.tseries.offsets import Minute
 from utils import bearing_noise, speed_noise, freq_sampling_noise, calc_distance, destination
@@ -13,8 +13,8 @@ class TrajectoryGenerator:
                  init_speed=5,
                  samples=10,
                  timestamp=pd.Timestamp(2015, 2, 1, 12),
-                 freq=3
-                 ):
+                 freq=3,
+                 reset_data = False):
         self.first_lat = first_lat
         self.first_lon = first_lon
         self.init_bearing = init_bearing
@@ -27,6 +27,9 @@ class TrajectoryGenerator:
                           'step_down_left',
                           'step_down_right',
                           'random']
+        self.reset_data = reset_data
+        if self.reset_data:
+            TrajectoryGenerator.reset_data()
 
     def generator(self, pattern, filename):
         csv_file = filename+"_"+str(self.timestamp.date())+".csv"
@@ -267,7 +270,8 @@ class TrajectoryGenerator:
               "Initial speed: {init_speed}\n"
               "Number of samples: {samples}\n"
               "Starting time of measurements: {timestamp}\n"
-              "With initial frequency of collected data: {freq} min".format(**self.__dict__))
+              "With initial frequency of collected data: {freq} min\n"
+              "and hard reset of data: {reset_data}".format(**self.__dict__))
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")
@@ -297,3 +301,12 @@ class TrajectoryGenerator:
                 return None
 
         print("\nDone with generator")
+
+    @staticmethod
+    def reset_data():
+        shutil.rmtree("data") if os.path.isdir("data") else None
+        for x in os.listdir(os.getcwd()):
+            os.remove(os.path.basename(x)) if x.endswith(".csv") else None
+
+
+

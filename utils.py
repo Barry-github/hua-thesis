@@ -1,5 +1,6 @@
 from math import degrees, atan2, asin, sin, cos, radians
 from random import random, randint, choice
+from sklearn import preprocessing
 import pandas as pd
 import numpy as np
 
@@ -64,3 +65,10 @@ def movements():
                  'step_down_right',
                  'random']
     return movements
+
+
+def standardize_data(x_train, x_test):
+    x_scaled_train = preprocessing.scale(x_train)
+    x_scaled_test = preprocessing .scale(x_test)
+
+    return x_scaled_train, x_scaled_test
