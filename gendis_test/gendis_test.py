@@ -2,9 +2,9 @@ import numpy as np
 from gendis.genetic import GeneticExtractor
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from data_extraction import DataExtractor
-from trajectory_generator import TrajectoryGenerator
-from utils import standardize_data
+from gendis_test.data_extraction import DataExtractor
+from gendis_test.trajectory_generator import TrajectoryGenerator
+from gendis_test.utils import standardize_data
 
 np.random.seed(1337)  # Random seed for reproducibility
 
