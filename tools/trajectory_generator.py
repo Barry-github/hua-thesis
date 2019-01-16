@@ -1,8 +1,12 @@
-import pandas as pd
-import csv, os, shutil
+import csv
+import os
+import shutil
 from random import shuffle, choice
+
+import pandas as pd
 from pandas.tseries.offsets import Minute
-from tools.utils import bearing_noise, speed_noise, freq_sampling_noise, calc_distance, destination
+
+from tools.utils import bearing_noise, speed_noise, calc_distance, destination, movements
 
 
 class TrajectoryGenerator:
@@ -22,11 +26,7 @@ class TrajectoryGenerator:
         self.samples = samples
         self.timestamp = timestamp
         self.freq = freq
-        self.movements = ['step_up_right',
-                          'step_up_left',
-                          'step_down_left',
-                          'step_down_right',
-                          'random']
+        self.movements = movements()
         self.reset_data = reset_data
         if self.reset_data:
             TrajectoryGenerator.reset_data()
@@ -49,7 +49,7 @@ class TrajectoryGenerator:
             d = 0
             while d < self.samples:
                 tempdata, timestamp, lat2, lon2, bearing = self.pattern_switcher(pattern=pattern,
-                                                                                 timestamp= last_timestamp,
+                                                                                 timestamp=last_timestamp,
                                                                                  lat=last_location[0],
                                                                                  lon=last_location[1],
                                                                                  speed=self.init_speed,
@@ -233,17 +233,23 @@ class TrajectoryGenerator:
     def random_movement(self, timestamp, first_lat, first_lon, speed, bearing, time):
 
         m = ['straight_right',
-                     'straight_left',
-                     'up',
-                     'down',
-                     'step_up_right',
-                     'step_up_left',
-                     'step_down_left',
-                     'step_down_right']
+             'straight_left',
+             'up',
+             'down',
+             'step_up_right',
+             'step_up_left',
+             'step_down_left',
+             'step_down_right']
 
         shuffle(m)
         pattern = choice(m)
-        data, timestamp, lat, lon, bearing  = getattr(TrajectoryGenerator, pattern)(self, timestamp, first_lat, first_lon, speed, bearing, time)
+        data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
+                                                                                   timestamp,
+                                                                                   first_lat,
+                                                                                   first_lon,
+                                                                                   speed,
+                                                                                   bearing,
+                                                                                   time)
 
         return data, timestamp, lat, lon, bearing
 
@@ -263,15 +269,7 @@ class TrajectoryGenerator:
         return data, timestamp, lat, lon, bearing
 
     def data_generation(self, filename="testing_", n_test=5):
-        print("\nStarting the generator with attributes: \n"
-              "Original latitude: {first_lat}\n"
-              "Original longitude: {first_lon}\n"
-              "Initial bearing: {init_bearing}\n"
-              "Initial speed: {init_speed}\n"
-              "Number of samples: {samples}\n"
-              "Starting time of measurements: {timestamp}\n"
-              "With initial frequency of collected data: {freq} min\n"
-              "and hard reset of data: {reset_data}".format(**self.__dict__))
+        self.print_data_generation()
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")
@@ -290,7 +288,6 @@ class TrajectoryGenerator:
                 if len(os.listdir("data")) < 5:
                     print("Not enought files. creating more")
                     for d in self.movements:
-                        print(d)
                         for i in range(n_test):
                             self.generator(pattern=d, filename=filename + d + "_" + str(i))
                 else:
@@ -300,7 +297,7 @@ class TrajectoryGenerator:
                 print("Done with generator")
                 return None
 
-        print("\nDone with generator")
+        print("Done with generator")
 
     @staticmethod
     def reset_data():
@@ -308,5 +305,14 @@ class TrajectoryGenerator:
         for x in os.listdir(os.getcwd()):
             os.remove(os.path.basename(x)) if x.endswith(".csv") else None
 
-
+    def print_data_generation(self):
+        print("\nStarting the generator with attributes: \n"
+              "Original latitude: {first_lat}\n"
+              "Original longitude: {first_lon}\n"
+              "Initial bearing: {init_bearing}\n"
+              "Initial speed: {init_speed}\n"
+              "Number of samples: {samples}\n"
+              "Starting time of measurements: {timestamp}\n"
+              "With initial frequency of collected data: {freq} min\n"
+              "and hard reset of data: {reset_data}".format(**self.__dict__))
 

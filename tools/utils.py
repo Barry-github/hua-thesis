@@ -62,7 +62,7 @@ def movements():
                  'step_up_left',
                  'step_down_left',
                  'step_down_right',
-                 'random']
+                 ]
     return movements
 
 
@@ -71,4 +71,21 @@ def standardize_data(x_train, x_test):
     x_scaled_test = preprocessing .scale(x_test)
 
     return x_scaled_train, x_scaled_test
+
+
+def print_genetic_param(gen_ext):
+    print("Starting fit in genetic extractor with:\n"
+          "population size:{0:d}\n"
+          "iterations: {1:d}\n"
+          "normed: {2}\n"
+          "noise_prob: {3}\n"
+          "add_shapelet_prob: {4}\n"
+          "remove_shapelet_prob: {5}\n"
+          "crossover_prob: {6}\n".format(gen_ext.population_size,
+                                         gen_ext.iterations,
+                                         gen_ext.normed,
+                                         gen_ext.add_noise_prob,
+                                         gen_ext.add_shapelet_prob,
+                                         gen_ext.remove_shapelet_prob,
+                                         gen_ext.crossover_prob))
 

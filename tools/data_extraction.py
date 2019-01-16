@@ -29,11 +29,10 @@ class DataExtractor:
                                 file = "data/" + file
                                 new_data.append(pd.read_csv(file))
                     dataframes.append(new_data)
-        print("Done reading files")
+        print("Done reading files\n")
         return dataframes
 
     def train_test_dataframes(self, dataset=0):
-        print("\nCreating datasets for train and test files")
         col_names = ['Timestamp', 'Lat', 'Lon', 'Bearing', 'Speed', 'Distance']
         train_df = pd.DataFrame(columns=col_names)
         train_range = int(len(self.dataframes[dataset]) * self.train_samples)
@@ -46,13 +45,12 @@ class DataExtractor:
             test_df = test_df.append(self.dataframes[dataset][d], ignore_index=True)
         n_split = int(len(test_df) / 10)
         test_df = np.split(test_df, n_split)
-        print("Success")
         return train_df, test_df
 
     @staticmethod
     def define_csv(dataset, ts_class, file):
         if DataExtractor.is_right_format(ts_class):
-            print("\nCreating {0:s} ".format(file))
+            print("Creating {0:s} ".format(file))
             class_list = ts_class
             x_file = "x_" + file
             y_file = "y_" + file
@@ -80,14 +78,14 @@ class DataExtractor:
 
             np.savetxt(y_file, y_ds, delimiter=",", fmt='%f')
             x_csv.close()
-            print("Success")
+            print("Done")
         else:
             print("wrong format for requested classes. needed a list with 2 string cells")
 
     @staticmethod
     def load_datasets():
 
-        print("\nLoading the csv files to the appropriate train and test arrays(nparrays)")
+        print("Loading the csv files to the appropriate train and test arrays(nparrays)")
         x_train = pd.read_csv("x_train.csv", header=None, skip_blank_lines=True).get_values()
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
         y_train = pd.read_csv("y_train.csv", header=None, skip_blank_lines=True).get_values()
@@ -96,7 +94,7 @@ class DataExtractor:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
         y_test = pd.read_csv("y_test.csv", header=None, skip_blank_lines=True).get_values()
         y_test = np.reshape(y_test, (y_test.shape[1]))
-        print("Done")
+        print("Done\n")
         return x_train, y_train, x_test, y_test
 
     def set_sz_listdir(self, listdir_sz):

@@ -1,17 +1,18 @@
+from __future__ import absolute_import
 import numpy as np
 from gendis.genetic import GeneticExtractor
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from tools.data_extraction import DataExtractor
 from tools.trajectory_generator import TrajectoryGenerator
-from tools.utils import standardize_data
+from tools.utils import standardize_data, print_genetic_param
 from tools.experiments import Experiments
 
 np.random.seed(1337)  # Random seed for reproducibility
 
 
 exp = Experiments()
-scenarios = exp.scenarios
+scenarios = exp.get_scenarios()
 
 for sc in scenarios:
     tr_gen_options = sc["trajectory_generator_options"]
@@ -39,12 +40,7 @@ for sc in scenarios:
     x_train, x_test = standardize_data(x_train, x_test)
 
     genetic_extractor = GeneticExtractor(**genetic_options)
-    print("Starting fit in genetic extractor with:\n"
-          "population size:{0:d}\n"
-          "iterations: {1:d}\n"
-          "normed: {2}\n".format(genetic_extractor.population_size,
-                                 genetic_extractor.iterations,
-                                 genetic_extractor.normed))
+    print_genetic_param(genetic_extractor)
 
     genetic_extractor.fit(x_train, y_train)
     distances_train = genetic_extractor.transform(x_train)
@@ -55,3 +51,4 @@ for sc in scenarios:
 
     # Print the accuracy score on the test set
     print('Accuracy = {}'.format(accuracy_score(y_test, lr.predict(distances_test))))
+
