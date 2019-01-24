@@ -6,7 +6,7 @@ from random import shuffle, choice
 import pandas as pd
 from pandas.tseries.offsets import Minute
 
-from tools.utils import bearing_noise, speed_noise, calc_distance, destination, movements
+from tools.utils import bearing_noise, speed_noise, calc_distance, destination, movements, print_data_generation
 
 
 class TrajectoryGenerator:
@@ -269,7 +269,7 @@ class TrajectoryGenerator:
         return data, timestamp, lat, lon, bearing
 
     def data_generation(self, filename="testing_", n_test=5):
-        self.print_data_generation()
+        print_data_generation(self.__dict__)
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")

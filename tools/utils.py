@@ -89,3 +89,14 @@ def print_genetic_param(gen_ext):
                                          gen_ext.remove_shapelet_prob,
                                          gen_ext.crossover_prob))
 
+
+def print_data_generation(dict):
+    print("\nStarting the generator with attributes: \n"
+          "Original latitude: {first_lat}\n"
+          "Original longitude: {first_lon}\n"
+          "Initial bearing: {init_bearing}\n"
+          "Initial speed: {init_speed}\n"
+          "Number of samples: {samples}\n"
+          "Starting time of measurements: {timestamp}\n"
+          "With initial frequency of collected data: {freq} min\n"
+          "and hard reset of data: {reset_data}".format(**dict))

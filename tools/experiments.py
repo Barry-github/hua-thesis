@@ -3,31 +3,51 @@ from pandas import Timestamp as Ts
 
 class Experiments:
     def __init__(self):
-        self.scenarios = []
-        self.init_scenarios()
+        self.settings = []
+        self.init_settings()
 
-    def init_scenarios(self):
-        temp = Experiments.options_data()
-        for x in temp:
+    def init_settings(self):
+        opt1, opt2, opt3 = Experiments.options_data()
+        for x in opt1:
             trajectory_generator_options = Experiments.set_tr_gen_options(**x)
             data_generation_options = Experiments.set_data_generation_options()
             define_csvs_options = Experiments.set_df_csv_options()
             genetic_options = Experiments.set_gen_options()
-            scenario = {"trajectory_generator_options": trajectory_generator_options,
+            settings = {"trajectory_generator_options": trajectory_generator_options,
                         "data_generation_options": data_generation_options,
                         "define_csvs_option": define_csvs_options,
                         "genetic_options": genetic_options}
-            self.scenarios.append(scenario)
+            self.add_setting(settings)
+        for x in opt2:
+            trajectory_generator_options = Experiments.set_tr_gen_options(samples=50,reset_data=True)
+            data_generation_options = Experiments.set_data_generation_options(**x)
+            define_csvs_options = Experiments.set_df_csv_options()
+            genetic_options = Experiments.set_gen_options()
+            settings = {"trajectory_generator_options": trajectory_generator_options,
+                        "data_generation_options": data_generation_options,
+                        "define_csvs_option": define_csvs_options,
+                        "genetic_options": genetic_options}
+            self.add_setting(settings)
+        for x in opt3:
+            trajectory_generator_options = Experiments.set_tr_gen_options(samples=50)
+            data_generation_options = Experiments.set_data_generation_options()
+            define_csvs_options = Experiments.set_df_csv_options(**x)
+            genetic_options = Experiments.set_gen_options()
+            settings = {"trajectory_generator_options": trajectory_generator_options,
+                        "data_generation_options": data_generation_options,
+                        "define_csvs_option": define_csvs_options,
+                        "genetic_options": genetic_options}
+            self.add_setting(settings)
 
-    def get_scenarios(self):
-        return self.scenarios
+    def get_setting(self):
+        return self.settings
 
-    def add_scenario(self, scenario):
+    def add_setting(self, setting):
 
-        self.scenarios.append(scenario)
+        self.settings.append(setting)
 
-    def remove_scenario(self, scenario):
-        self.scenarios.remove(scenario)
+    def remove_setting(self, setting):
+        self.settings.remove(setting)
 
     @staticmethod
     def set_tr_gen_options(first_lat=37.295493,
@@ -103,4 +123,13 @@ class Experiments:
                           {"samples": 200, "freq": 3, "reset_data": True},
                           {"samples": 500, "freq": 3, "reset_data": True},
                           {"samples": 1000, "freq": 3, "reset_data": True}]
-        return tr_gen_options
+        dt_gen_options = [{"n_test": 10},
+                          {"n_test": 13},
+                          {"n_test": 16},
+                          {"n_test": 19},
+                          {"n_test": 22}]
+        df_csv_options = [{"ts_class": ["Bearing", "Speed"]},
+                          {"ts_class": ["Bearing", "Distance"]},
+                          {"ts_class": ["Distance", "Speed"]}]
+        return tr_gen_options, dt_gen_options, df_csv_options
+
