@@ -1,5 +1,5 @@
 from pandas import Timestamp as Ts
-
+from tools.utils import print_settings
 
 class Experiments:
     def __init__(self):
@@ -16,10 +16,11 @@ class Experiments:
             settings = {"trajectory_generator_options": trajectory_generator_options,
                         "data_generation_options": data_generation_options,
                         "define_csvs_option": define_csvs_options,
-                        "genetic_options": genetic_options}
+                        "genetic_options": genetic_options,
+                        }
             self.add_setting(settings)
         for x in opt2:
-            trajectory_generator_options = Experiments.set_tr_gen_options(samples=50,reset_data=True)
+            trajectory_generator_options = Experiments.set_tr_gen_options(samples=50, reset_data=True)
             data_generation_options = Experiments.set_data_generation_options(**x)
             define_csvs_options = Experiments.set_df_csv_options()
             genetic_options = Experiments.set_gen_options()

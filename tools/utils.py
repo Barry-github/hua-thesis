@@ -100,3 +100,19 @@ def print_data_generation(dict):
           "Starting time of measurements: {timestamp}\n"
           "With initial frequency of collected data: {freq} min\n"
           "and hard reset of data: {reset_data}".format(**dict))
+
+def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options):
+    print("\nData Generator settings")
+    for key, value in trajectory_generator_options.items():
+        print("{0}: {1}".format(key, value))
+    print("\nData Extractor settings")
+    for key, value in data_generation_options.items():
+        print("{0}: {1}".format(key, value))
+    print("\nClasses")
+    for key, value in define_csvs_options.items():
+        print("{0}: {1}".format(key, value))
+    print("\nGenetic Options")
+    for key, value in genetic_options.items():
+        print("{0}: {1}".format(key, value))
+
+

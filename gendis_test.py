@@ -4,7 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from tools.data_extraction import DataExtractor
 from tools.trajectory_generator import TrajectoryGenerator
-from tools.utils import standardize_data, print_genetic_param
+from tools.utils import standardize_data, print_genetic_param, print_settings
 from tools.experiments import Experiments
 
 np.random.seed(1337)  # Random seed for reproducibility
@@ -13,7 +13,7 @@ np.random.seed(1337)  # Random seed for reproducibility
 def gendis_experiment(testing=False):
     accuracy_results = []
     for sc in settings:
-        print("####################### start of an experiment #######################\n")
+        print("####################### start of an experiment #######################")
         if testing:
             tr_gen_options = sc["trajectory_generator_options"]
             dt_gen_options = sc["data_generation_options"]
@@ -27,8 +27,8 @@ def gendis_experiment(testing=False):
             # Read in the datafiles
             dex = DataExtractor()
             train_df, test_df = dex.train_test_dataframes()
-            print("The train samples length is:{0}".format(len(train_df*10)))
-            print("The test samples length is:{0}\n".format(len(test_df*10)))
+            print("The train samples length is:{0}".format(len(train_df*dt_gen_options["n_test"])))
+            print("The test samples length is:{0}\n".format(len(test_df*dt_gen_options["n_test"])))
             train_options, test_options = Experiments.fix_df_csvs_options(df_csvs_options)
             train_options["dataset"] = train_df
             test_options["dataset"] = test_df
@@ -68,8 +68,8 @@ def gendis_experiment(testing=False):
             # Read in the datafiles
             dex = DataExtractor()
             train_df, test_df = dex.train_test_dataframes()
-            print("The train samples length is:{0}".format(len(train_df)))
-            print("The test samples length is:{0}\n".format(len(test_df)))
+            print("The train samples length is:{0}".format(len(train_df)*dt_gen_options["n_test"]))
+            print("The test samples length is:{0}\n".format(len(test_df)*dt_gen_options["n_test"]))
             train_options, test_options = Experiments.fix_df_csvs_options(df_csvs_options)
             train_options["dataset"] = train_df
             test_options["dataset"] = test_df
@@ -101,7 +101,12 @@ def gendis_experiment(testing=False):
 
 exp = Experiments()
 settings = exp.get_setting()
-testing = True
+testing = False
 results = gendis_experiment(testing)
-print("\nThe max accuracy is: {0} from the settings occurred in experiment no:{1}".format(max(results), results.index(max(results))))
-
+n_exp = results.index(max(results))
+print("\nThe max accuracy is: {0} from the settings occurred in experiment no:{1}".format(max(results), n_exp))
+best_result = settings[n_exp]
+print_settings(best_result["trajectory_generator_options"],
+               best_result["data_generation_options"],
+               best_result["define_csvs_option"],
+               best_result["genetic_options"])
