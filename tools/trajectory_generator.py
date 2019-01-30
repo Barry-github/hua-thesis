@@ -305,14 +305,3 @@ class TrajectoryGenerator:
         for x in os.listdir(os.getcwd()):
             os.remove(os.path.basename(x)) if x.endswith(".csv") else None
 
-    def print_data_generation(self):
-        print("\nStarting the generator with attributes: \n"
-              "Original latitude: {first_lat}\n"
-              "Original longitude: {first_lon}\n"
-              "Initial bearing: {init_bearing}\n"
-              "Initial speed: {init_speed}\n"
-              "Number of samples: {samples}\n"
-              "Starting time of measurements: {timestamp}\n"
-              "With initial frequency of collected data: {freq} min\n"
-              "and hard reset of data: {reset_data}".format(**self.__dict__))
-

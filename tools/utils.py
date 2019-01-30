@@ -62,6 +62,10 @@ def movements():
                  'step_up_left',
                  'step_down_left',
                  'step_down_right',
+                 'random',
+                 'random',
+                 'random',
+                 'random'
                  ]
     return movements
 
@@ -100,6 +104,7 @@ def print_data_generation(dict):
           "Starting time of measurements: {timestamp}\n"
           "With initial frequency of collected data: {freq} min\n"
           "and hard reset of data: {reset_data}".format(**dict))
+
 
 def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options):
     print("\nData Generator settings")

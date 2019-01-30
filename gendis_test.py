@@ -10,7 +10,7 @@ from tools.experiments import Experiments
 np.random.seed(1337)  # Random seed for reproducibility
 
 
-def gendis_experiment(testing=False):
+def gendis_experiment(testing):
     accuracy_results = []
     for sc in settings:
         print("####################### start of an experiment #######################")
@@ -27,13 +27,9 @@ def gendis_experiment(testing=False):
             # Read in the datafiles
             dex = DataExtractor()
             train_df, test_df = dex.train_test_dataframes()
-            print("The train samples length is:{0}".format(len(train_df*dt_gen_options["n_test"])))
-            print("The test samples length is:{0}\n".format(len(test_df*dt_gen_options["n_test"])))
-            train_options, test_options = Experiments.fix_df_csvs_options(df_csvs_options)
-            train_options["dataset"] = train_df
-            test_options["dataset"] = test_df
-            dex.define_csv(**train_options)
-            dex.define_csv(**test_options)
+            print("The train samples length is:{0}".format(len(train_df[0]*dt_gen_options["n_test"])))
+            print("The test samples length is:{0}\n".format(len(test_df[0]*dt_gen_options["n_test"])))
+            dex.define_csv(**df_csvs_options)
 
             x_train, y_train, x_test, y_test = dex.load_datasets()
 
@@ -101,8 +97,8 @@ def gendis_experiment(testing=False):
 
 exp = Experiments()
 settings = exp.get_setting()
-testing = False
-results = gendis_experiment(testing)
+test_mode = True
+results = gendis_experiment(test_mode)
 n_exp = results.index(max(results))
 print("\nThe max accuracy is: {0} from the settings occurred in experiment no:{1}".format(max(results), n_exp))
 best_result = settings[n_exp]

@@ -1,87 +1,122 @@
 import pandas as pd
 import numpy as np
 import os
-from tools.utils import timestamp_converter, movements
+from tools.utils import movements
 
 
 class DataExtractor:
     def __init__(self, train_samples=0.2):
-        self.dataframes = self.read_datasets()
+        self.dataframes_steps, self.dataframes_random = self.read_datasets()
         self.train_samples = train_samples
         self.file_string = "_"+str(pd.Timestamp(2015, 2, 1, 12).date())+".csv"
         self.listdir_sz = 0
         self.listdir = []
         self.movements = []
+        col_names = ['Timestamp', 'Lat', 'Lon', 'Bearing', 'Speed', 'Distance']
+        self.train_df = [pd.DataFrame(columns=col_names), pd.DataFrame(columns=col_names)]
+        self.test_df = [pd.DataFrame(columns=col_names), pd.DataFrame(columns=col_names)]
+        self.train_range = int(len(self.dataframes_steps[0]) * self.train_samples)
 
     def read_datasets(self):
         print("\nReading the data files", end='')
         self.movements = movements()
-        dataframes = []
+        dataframes_steps = []
+        dataframes_random = []
         if os.path.exists("data"):
             if os.path.isdir("data"):
                 self.listdir = os.listdir("data")
                 self.set_sz_listdir(len(self.listdir))
-                for idx, x in enumerate(self.movements):
-                    new_data = []
+                for x in self.movements:
+                    steps = []
+                    randoms = []
                     for file in self.listdir:
                         if file.endswith(".csv"):
                             if file.__contains__(x):
-                                file = "data/" + file
-                                new_data.append(pd.read_csv(file))
-                    dataframes.append(new_data)
+                                if x.__contains__("step"):
+                                    file = "data/" + file
+                                    steps.append(pd.read_csv(file))
+                                else:
+                                    file = "data/" + file
+                                    randoms.append(pd.read_csv(file))
+                    if x.__contains__("step"):
+                        dataframes_steps.append(steps)
+                    else:
+                        dataframes_random.append(randoms)
         print("....Done reading files")
-        return dataframes
+        return dataframes_steps, dataframes_random
 
-    def train_test_dataframes(self, dataset=0):
-        col_names = ['Timestamp', 'Lat', 'Lon', 'Bearing', 'Speed', 'Distance']
-        train_df = pd.DataFrame(columns=col_names)
-        train_range = int(len(self.dataframes[dataset]) * self.train_samples)
-        print()
-        for d in range(0, train_range):
-            train_df = train_df.append(self.dataframes[dataset][d], ignore_index=True)
-        n_split = int(len(train_df)/10)
-        train_df = np.split(train_df, n_split)
-        test_df = pd.DataFrame(columns=col_names)
-        for d in range(train_range, len(self.dataframes[dataset])):
-            test_df = test_df.append(self.dataframes[dataset][d], ignore_index=True)
-        n_split = int(len(test_df) / 10)
-        test_df = np.split(test_df, n_split)
-        return train_df, test_df
+    def train_test_dataframes(self, split=10):
+        for idx, mov in enumerate(self.dataframes_steps):
+            for d in range(0, self.train_range):
+                self.train_df[0] = self.train_df[0].append(self.dataframes_steps[idx][d], ignore_index=True)
+            for d in range(self.train_range, len(self.dataframes_steps[idx])):
+                self.test_df[0] = self.test_df[0].append(self.dataframes_steps[idx][d], ignore_index=True)
 
-    @staticmethod
-    def define_csv(dataset, ts_class, file):
+        for idx, mov in enumerate(self.dataframes_random):
+            for d in range(0, self.train_range):
+                self.train_df[1] = self.train_df[1].append(self.dataframes_random[idx][d], ignore_index=True)
+            for d in range(self.train_range, len(self.dataframes_random[idx])):
+                self.test_df[1] = self.test_df[1].append(self.dataframes_random[idx][d], ignore_index=True)
+
+        n_split = int(len(self.train_df[0]) / split)
+        self.train_df[0] = np.split(self.train_df[0], n_split)
+        self.train_df[1] = np.split(self.train_df[1], n_split)
+        n_split = int(len(self.test_df[0]) / split)
+        self.test_df[0] = np.split(self.test_df[0], n_split)
+        self.test_df[1] = np.split(self.test_df[1], n_split)
+        return self.train_df, self.test_df
+
+    def define_csv(self, ts_class):
         if DataExtractor.is_right_format(ts_class):
-            print("Creating {0:s} ".format(file), end='')
+            print("Creating {0:s} and {1:s} ".format("x_train.csv--y_train.csv","x_test.csv--y_test.csv"), end='')
             class_list = ts_class
-            x_file = "x_" + file
-            y_file = "y_" + file
+            x_train_file = "x_train.csv"
+            y_train_file = "y_train.csv"
+            x_test_file = "x_test.csv"
+            y_test_file = "y_test.csv"
+            # for train.csv
             x_ds = []
             y_ds = []
-            for sl in dataset:
-                if DataExtractor.classes_exist(ts_class,sl):
-                    x_ds.append(sl[class_list[0]].values)
-                    x_ds.append(sl[class_list[1]].values)
-                    y_ds.append(1)
-                    y_ds.append(2)
-                else:
-                    print("...error. not such classes in a dataframe of given dataset")
-                    break
+            for idx, sl in enumerate(self.train_df[0]):
+                x_ds.append(self.train_df[0][idx][class_list].values)
+                x_ds.append(self.train_df[1][idx][class_list].values)
+                y_ds.append(0)
+                y_ds.append(1)
 
             x_ds = np.array(x_ds)
             y_ds = np.array(y_ds)
             x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
             y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
-            with open(x_file, 'wb') as x_csv:
-                for idx, d in enumerate(x_ds):
-                    d = timestamp_converter(d)
-                    x_ds[idx] = d
+            with open(x_train_file, 'wb') as x_csv:
+
                 np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
 
-            np.savetxt(y_file, y_ds, delimiter=",", fmt='%f')
+            np.savetxt(y_train_file, y_ds, delimiter=",", fmt='%f')
             x_csv.close()
-            print("...Done")
+            print("...Done with train.csv", end=' ')
+
+            # for test.csv
+            x_ds = []
+            y_ds = []
+            for idx, sl in enumerate(self.test_df[0]):
+                x_ds.append(self.test_df[0][idx][class_list].values)
+                x_ds.append(self.test_df[1][idx][class_list].values)
+                y_ds.append(0)
+                y_ds.append(1)
+
+            x_ds = np.array(x_ds)
+            y_ds = np.array(y_ds)
+            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
+            y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
+            with open(x_test_file, 'wb') as x_csv:
+
+                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
+
+            np.savetxt(y_test_file, y_ds, delimiter=",", fmt='%f')
+            x_csv.close()
+            print("...Done with test.csv")
         else:
-            print("...wrong format for requested classes. needed a list with 2 string cells")
+            print("...wrong format for requested attributes. needed a option from [Bearing,Speed,Distance]")
 
     @staticmethod
     def load_datasets():
@@ -106,17 +141,9 @@ class DataExtractor:
 
     @staticmethod
     def is_right_format(ts_class):
-        if len(ts_class) == 2:
-            if isinstance(ts_class[0], str) and isinstance(ts_class[1], str):
+        if isinstance(ts_class, str):
+            if (ts_class is "Bearing") or (ts_class is "Distance") or (ts_class is "Speed"):
                 return True
-            else:
-                return False
-
-    @staticmethod
-    def classes_exist(ts_class, df):
-        list_col = list(df)
-        if ts_class[0] in list_col and ts_class[1] in list_col:
-            return True
         else:
             return False
 

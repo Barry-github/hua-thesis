@@ -78,10 +78,8 @@ class Experiments:
         return dt_gen_options
 
     @staticmethod
-    def set_df_csv_options(ts_class=["Bearing","Speed"],
-                           file=["train.csv", "test.csv"]):
-        df_csv_options = {"ts_class": ts_class,
-                          "file": file}
+    def set_df_csv_options(ts_class="Bearing"):
+        df_csv_options = {"ts_class": ts_class}
         return df_csv_options
 
     @staticmethod
@@ -110,14 +108,6 @@ class Experiments:
         return gen_options
 
     @staticmethod
-    def fix_df_csvs_options(df_csvs_options):
-        ts_class = df_csvs_options["ts_class"]
-        file = df_csvs_options["file"]
-        train_options = {"ts_class": ts_class, "file": file[0]}
-        test_options = {"ts_class": ts_class, "file": file[1]}
-        return train_options, test_options
-
-    @staticmethod
     def options_data():
         tr_gen_options = [{"samples": 50, "freq": 3, "reset_data": True},
                           {"samples": 100, "freq": 3, "reset_data": True},
@@ -129,8 +119,8 @@ class Experiments:
                           {"n_test": 16},
                           {"n_test": 19},
                           {"n_test": 22}]
-        df_csv_options = [{"ts_class": ["Bearing", "Speed"]},
-                          {"ts_class": ["Bearing", "Distance"]},
-                          {"ts_class": ["Distance", "Speed"]}]
+        df_csv_options = [{"ts_class": "Bearing"},
+                          {"ts_class": "Speed"},
+                          {"ts_class": "Distance"}]
         return tr_gen_options, dt_gen_options, df_csv_options
 
