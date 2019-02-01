@@ -5,7 +5,7 @@ from tools.utils import movements
 
 
 class DataExtractor:
-    def __init__(self, train_samples=0.2):
+    def __init__(self, train_samples=0.8):
         self.dataframes_steps, self.dataframes_random = self.read_datasets()
         self.train_samples = train_samples
         self.file_string = "_"+str(pd.Timestamp(2015, 2, 1, 12).date())+".csv"
@@ -68,7 +68,7 @@ class DataExtractor:
 
     def define_csv(self, ts_class):
         if DataExtractor.is_right_format(ts_class):
-            print("Creating {0:s} and {1:s} ".format("x_train.csv--y_train.csv","x_test.csv--y_test.csv"), end='')
+            print("Creating {0:s} and {1:s} ".format("x_train.csv--y_train.csv", "x_test.csv--y_test.csv"), end='')
             class_list = ts_class
             x_train_file = "x_train.csv"
             y_train_file = "y_train.csv"

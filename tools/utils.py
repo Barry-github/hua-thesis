@@ -59,9 +59,9 @@ def timestamp_converter(data):
 
 def movements():
     movements = ['step_up_right',
-                 'step_up_left',
-                 'step_down_left',
-                 'step_down_right',
+                 'step_up_right',
+                 'step_up_right',
+                 'step_up_right',
                  'random',
                  'random',
                  'random',

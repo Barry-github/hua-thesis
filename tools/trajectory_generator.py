@@ -268,13 +268,13 @@ class TrajectoryGenerator:
         data, timestamp, lat, lon, bearing = switcher.get(pattern, (0, 0, 0, 0))
         return data, timestamp, lat, lon, bearing
 
-    def data_generation(self, filename="testing_", n_test=5):
+    def data_generation(self, filename="testing_", n_test=10):
         print_data_generation(self.__dict__)
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")
             os.makedirs("data")
-            if len(os.listdir("data")) < 5:
+            if len(os.listdir("data")) < n_test:
                 for d in self.movements:
                     print("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
@@ -283,10 +283,10 @@ class TrajectoryGenerator:
                 print("Done with generator")
                 return None
         else:
-            print("\nData already exist")
+            print("\nData already exists")
             if os.path.isdir("data"):
-                if len(os.listdir("data")) < 5:
-                    print("Not enought files. creating more")
+                if len(os.listdir("data")) < n_test:
+                    print("Not enough files. creating more")
                     for d in self.movements:
                         for i in range(n_test):
                             self.generator(pattern=d, filename=filename + d + "_" + str(i))

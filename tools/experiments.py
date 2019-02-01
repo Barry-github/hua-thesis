@@ -1,5 +1,4 @@
 from pandas import Timestamp as Ts
-from tools.utils import print_settings
 
 class Experiments:
     def __init__(self):
@@ -55,7 +54,7 @@ class Experiments:
                            first_lon=23.824322,
                            init_bearing=90,
                            init_speed=5,
-                           samples=20,
+                           samples=50,
                            timestamp=Ts(2015, 2, 1, 12),
                            freq=3,
                            reset_data=False):
@@ -120,7 +119,6 @@ class Experiments:
                           {"n_test": 19},
                           {"n_test": 22}]
         df_csv_options = [{"ts_class": "Bearing"},
-                          {"ts_class": "Speed"},
-                          {"ts_class": "Distance"}]
+                          {"ts_class": "Speed"}]
         return tr_gen_options, dt_gen_options, df_csv_options
 
