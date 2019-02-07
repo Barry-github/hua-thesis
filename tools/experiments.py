@@ -1,5 +1,6 @@
 from pandas import Timestamp as Ts
 
+
 class Experiments:
     def __init__(self):
         self.settings = []

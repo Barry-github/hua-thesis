@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from tools.utils import movements
+from tools.utils import get_movements
 
 
 class DataExtractor:
@@ -19,7 +19,7 @@ class DataExtractor:
 
     def read_datasets(self):
         print("\nReading the data files", end='')
-        self.movements = movements()
+        self.movements = get_movements()
         dataframes_steps = []
         dataframes_random = []
         if os.path.exists("data"):
@@ -85,13 +85,13 @@ class DataExtractor:
 
             x_ds = np.array(x_ds)
             y_ds = np.array(y_ds)
-            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
-            y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
+            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1])).astype(int)
+            y_ds = np.reshape(y_ds, (1, y_ds.shape[0])).astype(int)
             with open(x_train_file, 'wb') as x_csv:
 
-                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
+                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%i')
 
-            np.savetxt(y_train_file, y_ds, delimiter=",", fmt='%f')
+            np.savetxt(y_train_file, y_ds, delimiter=",", fmt='%i')
             x_csv.close()
             print("...Done with train.csv", end=' ')
 
@@ -106,13 +106,13 @@ class DataExtractor:
 
             x_ds = np.array(x_ds)
             y_ds = np.array(y_ds)
-            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1]))
-            y_ds = np.reshape(y_ds, (1, y_ds.shape[0]))
+            x_ds = np.reshape(x_ds, (x_ds.shape[0], x_ds.shape[1])).astype(int)
+            y_ds = np.reshape(y_ds, (1, y_ds.shape[0])).astype(int)
             with open(x_test_file, 'wb') as x_csv:
 
-                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%f')
+                np.savetxt(x_csv, x_ds, delimiter=',', newline='\n', fmt='%i')
 
-            np.savetxt(y_test_file, y_ds, delimiter=",", fmt='%f')
+            np.savetxt(y_test_file, y_ds, delimiter=",", fmt='%i')
             x_csv.close()
             print("...Done with test.csv")
         else:
@@ -122,14 +122,10 @@ class DataExtractor:
     def load_datasets():
 
         print("Loading the csv files to the appropriate train and test arrays(nparrays)", end='')
-        x_train = pd.read_csv("x_train.csv", header=None, skip_blank_lines=True).get_values()
-        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
-        y_train = pd.read_csv("y_train.csv", header=None, skip_blank_lines=True).get_values()
-        y_train = np.reshape(y_train, (y_train.shape[1]))
-        x_test = pd.read_csv("x_test.csv", header=None, skip_blank_lines=True).get_values()
-        x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
-        y_test = pd.read_csv("y_test.csv", header=None, skip_blank_lines=True).get_values()
-        y_test = np.reshape(y_test, (y_test.shape[1]))
+        x_train = np.loadtxt("x_train.csv", delimiter=",", dtype=int)
+        y_train = np.loadtxt("y_train.csv", delimiter=",", dtype=int)
+        x_test = np.loadtxt("x_test.csv", delimiter=",", dtype=int)
+        y_test = np.loadtxt("y_test.csv", delimiter=",", dtype=int)
         print("...Done")
         return x_train, y_train, x_test, y_test
 

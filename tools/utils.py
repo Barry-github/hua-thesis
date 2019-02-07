@@ -5,6 +5,25 @@ import pandas as pd
 import numpy as np
 
 
+global_vals = {'movements': ['step_up_right',
+                             'step_up_right',
+                             'step_up_right',
+                             'step_up_right',
+                             'random',
+                             'random',
+                             'random',
+                             'random'
+                             ]}
+
+
+def random_turn():
+    return randint(0, 35)
+
+
+def random_init_bearing(bearing):
+    return random_noise(bearing, limit_up=180) % 360
+
+
 def bearing_noise(bearing):
     return random_noise(bearing, limit_up=10)
 
@@ -57,17 +76,12 @@ def timestamp_converter(data):
     return new_array
 
 
-def movements():
-    movements = ['step_up_right',
-                 'step_up_right',
-                 'step_up_right',
-                 'step_up_right',
-                 'random',
-                 'random',
-                 'random',
-                 'random'
-                 ]
-    return movements
+def get_movements():
+    return global_vals['movements']
+
+
+def set_movements(movements):
+    global_vals['movements'] = movements
 
 
 def standardize_data(x_train, x_test):
