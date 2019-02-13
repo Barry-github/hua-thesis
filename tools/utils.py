@@ -91,6 +91,25 @@ def standardize_data(x_train, x_test):
     return x_scaled_train, x_scaled_test
 
 
+def angle_diff(data):
+    if type(data) is np.ndarray:
+        new_arr = np.array([])
+        for arr in data:
+            temp_arr = []
+            i = 0
+            while i < len(arr):
+                if i+1 == len(arr):
+                    break;
+                result = arr[i+1]-arr[i]
+                if result !=0 and abs(result) >=180:
+                        result = abs(abs(result) - 360)
+                temp_arr.append(result)
+                i = i+1
+            new_arr=np.append(new_arr, temp_arr).astype(int)
+    new_arr = np.reshape(new_arr, (data.shape[0], data.shape[1]-1))
+    return new_arr
+
+
 def print_genetic_param(gen_ext):
     print("Starting fit in genetic extractor with:\n"
           "population size:{0:d}\n"
