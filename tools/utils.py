@@ -139,18 +139,30 @@ def print_data_generation(dict):
           "and hard reset of data: {reset_data}".format(**dict))
 
 
-def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options):
-    print("\nData Generator settings")
-    for key, value in trajectory_generator_options.items():
-        print("{0}: {1}".format(key, value))
-    print("\nData Extractor settings")
-    for key, value in data_generation_options.items():
-        print("{0}: {1}".format(key, value))
-    print("\nClasses")
-    for key, value in define_csvs_options.items():
-        print("{0}: {1}".format(key, value))
-    print("\nGenetic Options")
-    for key, value in genetic_options.items():
-        print("{0}: {1}".format(key, value))
+def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options,file=None):
+    if file is not None:
+        for key, value in trajectory_generator_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nData Extractor settings")
+        for key, value in data_generation_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nClasses")
+        for key, value in define_csvs_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nGenetic Options")
+        for key, value in genetic_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+    else:
+        for key, value in trajectory_generator_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nData Extractor settings")
+        for key, value in data_generation_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nClasses")
+        for key, value in define_csvs_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nGenetic Options")
+        for key, value in genetic_options.items():
+            print("{0}: {1}".format(key, value))
 
 

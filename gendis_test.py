@@ -9,8 +9,6 @@ from tools.trajectory_generator import TrajectoryGenerator
 from tools.utils import standardize_data, print_genetic_param, print_settings, set_movements, angle_diff
 from tools.experiments import Experiments
 
-now = datetime.datetime.now()
-
 np.random.seed(1337)  # Random seed for reproducibility
 
 
@@ -71,20 +69,28 @@ def gendis_experiment():
 
 exp = Experiments()
 settings = exp.get_setting()
-results = gendis_experiment()
-n_exp = results.index(max(results))
-print("\nThe max accuracy is: {0} from the settings occurred in experiment no:{1}".format(max(results), n_exp))
-best_result = settings[n_exp]
-print_settings(best_result["tr_gen_options"],
-               best_result["dt_gen_options"],
-               best_result["df_csv_options"],
-               best_result["gen_options"])
-print("\nAll experiments results")
-for idx, x in results:
-    print("Experiment#: {0}".format(str(idx)))
-    temp_settings = settings[idx]
-    print_settings(temp_settings["tr_gen_options"],
-                   temp_settings["dt_gen_options"],
-                   temp_settings["df_csv_options"],
-                   temp_settings["gen_options"])
-    print("Accuracy: {0}".format(results[idx]))
+
+count = 0
+while count < 50:
+    results = gendis_experiment()
+    n_exp = results.index(max(results))
+
+    file = "gendis_test_output_"+datetime.datetime.today().strftime("%d_%m_%H:%M")+".txt"
+    file_output = open(file, 'w')
+    print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
+    best_result = settings[n_exp]
+    print_settings(best_result["tr_gen_options"],
+                   best_result["dt_gen_options"],
+                   best_result["df_csv_options"],
+                   best_result["gen_options"])
+    print("\nAll experiments results", file=file_output)
+    for idx, x in results:
+        print("Experiment#: {0}".format(str(idx+1)))
+        temp_settings = settings[idx]
+        print_settings(temp_settings["tr_gen_options"],
+                       temp_settings["dt_gen_options"],
+                       temp_settings["df_csv_options"],
+                       temp_settings["gen_options"], file=file_output)
+        print("Accuracy: {0}".format(results[idx]), file=file_output)
+    file_output.close()
+    count = count + 1
