@@ -1,6 +1,6 @@
 import numpy as np
 import datetime
-import sys
+import time
 from gendis.genetic import GeneticExtractor
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
@@ -18,6 +18,7 @@ def gendis_experiment():
     accuracy_results = []
     for idx, sc in enumerate(settings):
         print("####################### Experiment no: {0}  #######################".format(idx+1))
+        first = time.time()
         tr_gen_options = sc["tr_gen_options"]
         dt_gen_options = sc["dt_gen_options"]
         df_csv_options = sc["df_csv_options"]
@@ -62,12 +63,12 @@ def gendis_experiment():
         accuracy_result = accuracy_score(y_test, lr.predict(distances_test))
         print('Accuracy = {}'.format(accuracy_result))
         accuracy_results.append(accuracy_result)
+        delta = time.time() - first
+        print("time passed on this experiment: {0}".format(delta))
         print("####################### End of Experiment no: {0} #######################\n".format(idx+1))
     return accuracy_results
 
 
-# output_file = "gendis_test_ouput_" + now.strftime('%m_%d_%H:%M') + ".txt"
-# sys.stdout = open(output_file, 'w')
 exp = Experiments()
 settings = exp.get_setting()
 results = gendis_experiment()
@@ -76,7 +77,7 @@ print("\nThe max accuracy is: {0} from the settings occurred in experiment no:{1
 best_result = settings[n_exp]
 print_settings(best_result["tr_gen_options"],
                best_result["dt_gen_options"],
-               best_result["define_csvs_option"],
+               best_result["df_csv_options"],
                best_result["gen_options"])
 print("\nAll experiments results")
 for idx, x in results:

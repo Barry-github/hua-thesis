@@ -49,11 +49,11 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[2])
         # sixth setting
-        self.add_setting(self.tr_gen_options[2],
-                         self.dt_gen_options[2],
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
                          self.df_csv_options[0],
-                         self.train_test_options[2],
-                         self.gen_options[2])
+                         self.train_test_options[0],
+                         self.gen_options[3])
 
     def get_setting(self):
         return self.settings
