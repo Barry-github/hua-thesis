@@ -1,0 +1,141 @@
+####################### Experiment no: 1  #######################
+
+Starting the generator with attributes: 
+Original latitude: 37.295493
+Original longitude: 23.824322
+Initial bearing: 90
+Initial speed: 5
+Number of samples: 25
+Starting time of measurements: 2015-02-01 12:00:00
+With initial frequency of collected data: 3 min
+and hard reset of data: True
+
+Create directory 'data' 
+now creating data for movement: step_up_right
+now creating data for movement: random
+Done with generator
+
+Reading the data files....Done reading files
+The train samples length is:4000
+The test samples length is:1000
+
+Creating x_train.csv--y_train.csv and x_test.csv--y_test.csv ...Done with train.csv ...Done with test.csv
+Loading the csv files to the appropriate train and test arrays(nparrays)...Done
+standardized train and test data
+
+Starting fit in genetic extractor with:
+population size:20
+iterations: 5
+normed: True
+noise_prob: 0.3
+add_shapelet_prob: 0.3
+remove_shapelet_prob: 0.3
+crossover_prob: 0.66
+
+it		avg		std		max		time
+1		-0.5219		0.066		-0.312902	14.0382
+2		-0.4321		0.059		-0.312902	10.8571
+Process ForkPoolWorker-2:
+Process ForkPoolWorker-3:
+Traceback (most recent call last):
+  File "/home/kapadais/github/hua-thesis/gendis_test.py", line 75, in <module>
+Process ForkPoolWorker-4:
+Process ForkPoolWorker-1:
+    results = gendis_experiment()
+  File "/home/kapadais/github/hua-thesis/gendis_test.py", line 53, in gendis_experiment
+    genetic_extractor.fit(x_train, y_train)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/gendis/genetic.py", line 438, in fit
+    fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/pathos/multiprocessing.py", line 137, in map
+    return _pool.map(star(f), zip(*args)) # chunksize
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 266, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 638, in get
+    self.wait(timeout)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 635, in wait
+    self._event.wait(timeout)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/threading.py", line 551, in wait
+Traceback (most recent call last):
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 258, in _bootstrap
+    self.run()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 108, in worker
+    task = get()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/queues.py", line 337, in get
+    with self._rlock:
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/synchronize.py", line 102, in __enter__
+    return self._semlock.__enter__()
+KeyboardInterrupt
+    signaled = self._cond.wait(timeout)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/threading.py", line 295, in wait
+    waiter.acquire()
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 258, in _bootstrap
+    self.run()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 108, in worker
+    task = get()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/queues.py", line 338, in get
+    res = self._reader.recv_bytes()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/connection.py", line 219, in recv_bytes
+    buf = self._recv_bytes(maxlength)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/connection.py", line 410, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/connection.py", line 382, in _recv
+    chunk = read(handle, remaining)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 258, in _bootstrap
+    self.run()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 119, in worker
+    result = (True, func(*args, **kwds))
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/pathos/helpers/mp_helper.py", line 15, in <lambda>
+    func = lambda args: f(*args)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/gendis/genetic.py", line 254, in cost
+    dist = util.sdist(shapelets[j].flatten(), ts)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/gendis/util.py", line 38, in sdist
+    dist = euclidean(norm_x, norm_y)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/spatial/distance.py", line 598, in euclidean
+    return minkowski(u, v, p=2, w=w)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/spatial/distance.py", line 501, in minkowski
+    dist = norm(u_v, ord=p)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/linalg/misc.py", line 144, in norm
+    nrm2 = get_blas_funcs('nrm2', dtype=a.dtype)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/linalg/blas.py", line 395, in get_blas_funcs
+    _blas_alias)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/linalg/blas.py", line 310, in _get_funcs
+    module2 = (fmodule, fmodule_name)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 258, in _bootstrap
+    self.run()
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 119, in worker
+    result = (True, func(*args, **kwds))
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/multiprocess/pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/pathos/helpers/mp_helper.py", line 15, in <lambda>
+    func = lambda args: f(*args)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/gendis/genetic.py", line 254, in cost
+    dist = util.sdist(shapelets[j].flatten(), ts)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/gendis/util.py", line 38, in sdist
+    dist = euclidean(norm_x, norm_y)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/spatial/distance.py", line 598, in euclidean
+    return minkowski(u, v, p=2, w=w)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/spatial/distance.py", line 501, in minkowski
+    dist = norm(u_v, ord=p)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/scipy/linalg/misc.py", line 137, in norm
+    a = np.asarray_chkfinite(a)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/numpy/lib/function_base.py", line 1230, in asarray_chkfinite
+    a = asarray(a, dtype=dtype, order=order)
+  File "/home/kapadais/anaconda3/envs/generator_trajectories/lib/python3.6/site-packages/numpy/core/numeric.py", line 424, in asarray
+    def asarray(a, dtype=None, order=None):
+KeyboardInterrupt

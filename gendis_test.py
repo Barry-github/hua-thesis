@@ -75,22 +75,14 @@ while count < 50:
     results = gendis_experiment()
     n_exp = results.index(max(results))
 
-    file = "gendis_test_output_"+datetime.datetime.today().strftime("%d_%m_%H:%M")+".txt"
-    file_output = open(file, 'w')
+    file = "gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
+    file_output = open(file, 'a+')
     print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
-    best_result = settings[n_exp]
-    print_settings(best_result["tr_gen_options"],
-                   best_result["dt_gen_options"],
-                   best_result["df_csv_options"],
-                   best_result["gen_options"])
+
     print("\nAll experiments results", file=file_output)
     for idx, x in results:
         print("Experiment#: {0}".format(str(idx+1)))
         temp_settings = settings[idx]
-        print_settings(temp_settings["tr_gen_options"],
-                       temp_settings["dt_gen_options"],
-                       temp_settings["df_csv_options"],
-                       temp_settings["gen_options"], file=file_output)
         print("Accuracy: {0}".format(results[idx]), file=file_output)
     file_output.close()
     count = count + 1
