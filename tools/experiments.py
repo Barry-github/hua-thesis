@@ -19,7 +19,7 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         # first setting
-        self.add_setting(self.tr_gen_options[0],
+        '''self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
@@ -47,7 +47,7 @@ class Experiments:
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[2])
+                         self.gen_options[2])'''
         # sixth setting
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],

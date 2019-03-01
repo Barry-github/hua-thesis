@@ -73,16 +73,17 @@ settings = exp.get_setting()
 count = 0
 while count < 50:
     results = gendis_experiment()
-    n_exp = results.index(max(results))
+    #n_exp = results.index(max(results))
 
     file = "gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
     file_output = open(file, 'a+')
-    print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
+    print("max accuracy: {0} at round :{1}".format(max(results),count),file=file_output)
+    '''print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
 
     print("\nAll experiments results", file=file_output)
     for idx, x in results:
         print("Experiment#: {0}".format(str(idx+1)))
         temp_settings = settings[idx]
-        print("Accuracy: {0}".format(results[idx]), file=file_output)
+        print("Accuracy: {0}".format(results[idx]), file=file_output)'''
     file_output.close()
     count = count + 1
