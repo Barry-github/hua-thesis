@@ -1,2 +1,0 @@
-
-The max accuracy: 0.875 at: 3
