@@ -6,7 +6,7 @@ from tools.utils import get_movements
 
 class DataExtractor:
     def __init__(self, train_samples=0.8):
-        self.dataframes_steps, self.dataframes_random = self.read_datasets()
+        self.dataframes_first_movement, self.dataframes_second_movement = self.read_datasets()
         self.train_samples = train_samples
         self.file_string = "_"+str(pd.Timestamp(2015, 2, 1, 12).date())+".csv"
         self.listdir_sz = 0
@@ -15,48 +15,51 @@ class DataExtractor:
         col_names = ['Timestamp', 'Lat', 'Lon', 'Bearing', 'Speed', 'Distance']
         self.train_df = [pd.DataFrame(columns=col_names), pd.DataFrame(columns=col_names)]
         self.test_df = [pd.DataFrame(columns=col_names), pd.DataFrame(columns=col_names)]
-        self.train_range = int(len(self.dataframes_steps[0]) * self.train_samples)
+        self.train_range = int(len(self.dataframes_first_movement[0]) * self.train_samples)
 
     def read_datasets(self):
         print("\nReading the data files", end='')
         self.movements = get_movements()
-        dataframes_steps = []
-        dataframes_random = []
+        dataframes_first_movement = []
+        dataframes_second_movement = []
         if os.path.exists("data"):
             if os.path.isdir("data"):
                 self.listdir = os.listdir("data")
                 self.set_sz_listdir(len(self.listdir))
-                for x in self.movements:
-                    steps = []
-                    randoms = []
+                for d in self.movements['first_movement']:
+                    first = []
                     for file in self.listdir:
                         if file.endswith(".csv"):
-                            if file.__contains__(x):
-                                if x.__contains__("step"):
-                                    file = "data/" + file
-                                    steps.append(pd.read_csv(file))
-                                else:
-                                    file = "data/" + file
-                                    randoms.append(pd.read_csv(file))
-                    if x.__contains__("step"):
-                        dataframes_steps.append(steps)
-                    else:
-                        dataframes_random.append(randoms)
+                            if file.__contains__(d):
+                                file = "data/" + file
+                                first.append(pd.read_csv(file))
+
+                    dataframes_first_movement.append(first)
+                for d in self.movements['second_movement']:
+                    second = []
+                    for file in self.listdir:
+                        if file.endswith(".csv"):
+                            if file.__contains__(d):
+                                file = "data/" + file
+                                second.append(pd.read_csv(file))
+
+                    dataframes_second_movement.append(second)
+
         print("....Done reading files")
-        return dataframes_steps, dataframes_random
+        return dataframes_first_movement, dataframes_second_movement
 
     def train_test_dataframes(self, split=10):
-        for idx, mov in enumerate(self.dataframes_steps):
+        for idx, mov in enumerate(self.dataframes_first_movement):
             for d in range(0, self.train_range):
-                self.train_df[0] = self.train_df[0].append(self.dataframes_steps[idx][d], ignore_index=True)
-            for d in range(self.train_range, len(self.dataframes_steps[idx])):
-                self.test_df[0] = self.test_df[0].append(self.dataframes_steps[idx][d], ignore_index=True)
+                self.train_df[0] = self.train_df[0].append(self.dataframes_first_movement[idx][d], ignore_index=True)
+            for d in range(self.train_range, len(self.dataframes_first_movement[idx])):
+                self.test_df[0] = self.test_df[0].append(self.dataframes_first_movement[idx][d], ignore_index=True)
 
-        for idx, mov in enumerate(self.dataframes_random):
+        for idx, mov in enumerate(self.dataframes_second_movement):
             for d in range(0, self.train_range):
-                self.train_df[1] = self.train_df[1].append(self.dataframes_random[idx][d], ignore_index=True)
-            for d in range(self.train_range, len(self.dataframes_random[idx])):
-                self.test_df[1] = self.test_df[1].append(self.dataframes_random[idx][d], ignore_index=True)
+                self.train_df[1] = self.train_df[1].append(self.dataframes_second_movement[idx][d], ignore_index=True)
+            for d in range(self.train_range, len(self.dataframes_second_movement[idx])):
+                self.test_df[1] = self.test_df[1].append(self.dataframes_second_movement[idx][d], ignore_index=True)
 
         n_split = int(len(self.train_df[0]) / split)
         self.train_df[0] = np.split(self.train_df[0], n_split)
