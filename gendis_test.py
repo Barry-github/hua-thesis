@@ -1,6 +1,7 @@
 import numpy as np
 import datetime
 import time
+import os
 from gendis.genetic import GeneticExtractor
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
@@ -15,7 +16,6 @@ np.random.seed(1337)  # Random seed for reproducibility
 def gendis_experiment():
     accuracy_results = []
     for idx, sc in enumerate(settings):
-        print("####################### Experiment no: {0}  #######################".format(idx+1))
         first = time.time()
         tr_gen_options = sc["tr_gen_options"]
         dt_gen_options = sc["dt_gen_options"]
@@ -23,9 +23,10 @@ def gendis_experiment():
         train_test_options = sc["train_test_options"]
         gen_options = sc["gen_options"]
 
-        movements = ['step_up_right',
-                     'random'
-                     ]
+        first_movement = ['step_up_right']
+        second_movement = ['random']
+        movements = {'first_movement': first_movement,
+                     'second_movement': second_movement}
         set_movements(movements)
 
         # Create files if not created
@@ -63,17 +64,18 @@ def gendis_experiment():
         accuracy_results.append(accuracy_result)
         delta = time.time() - first
         print("time passed on this experiment: {0}".format(delta))
-        print("####################### End of Experiment no: {0} #######################\n".format(idx+1))
     return accuracy_results
 
 
 exp = Experiments()
 settings = exp.get_setting()
-
+if not os.path.exists("outputs"):
+    os.makedirs("outputs")
 count = 0
-while count < 50:
+while count < 10:
     results = gendis_experiment()
     #n_exp = results.index(max(results))
+    print("####################### Experiment no: {0}  #######################".format(count + 1))
 
     file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
     file_output = open(file, 'a+')
@@ -87,3 +89,5 @@ while count < 50:
         print("Accuracy: {0}".format(results[idx]), file=file_output)'''
     file_output.close()
     count = count + 1
+    print("####################### End of Experiment no: {0} #######################\n".format(count))
+

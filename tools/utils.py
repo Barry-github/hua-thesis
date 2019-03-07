@@ -5,19 +5,12 @@ import pandas as pd
 import numpy as np
 
 
-global_vals = {'movements': ['step_up_right',
-                             'step_up_right',
-                             'step_up_right',
-                             'step_up_right',
-                             'random',
-                             'random',
-                             'random',
-                             'random'
-                             ]}
+global_vals = {'movements': {'first_movement': ['step_up_right'], 'second_movement': ['random']}
+               }
 
 
-def random_turn():
-    return randint(0, 35)
+def random_turn(min=0, max=90):
+    return randint(min, max)
 
 
 def random_init_bearing(bearing):

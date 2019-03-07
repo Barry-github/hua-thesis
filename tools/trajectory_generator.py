@@ -26,7 +26,9 @@ class TrajectoryGenerator:
         self.samples = samples
         self.timestamp = timestamp
         self.freq = freq
-        self.movements = get_movements()
+        movement_types = {'first_movement': get_movements()['first_movement'],
+                          'second_movement': get_movements()['second_movement']}
+        self.movements = movement_types
         self.reset_data = reset_data
         if self.reset_data:
             TrajectoryGenerator.reset_data()
@@ -230,6 +232,32 @@ class TrajectoryGenerator:
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
+    def spiral_movement_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        turn = random_turn(min=45, max=80)
+        tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
+                                                                first_lat=first_lat,
+                                                                first_lon=first_lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                turn=turn)
+        data.extend(tempdata)
+        return data, timestamp, lat, lon, bearing
+
+    def spiral_movement_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        turn = random_turn(min=45, max=80)
+        tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                 first_lat=first_lat,
+                                                                 first_lon=first_lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time,
+                                                                 turn=turn)
+        data.extend(tempdata)
+        return data, timestamp, lat, lon, bearing
+
     def random_movement(self, timestamp, first_lat, first_lon, speed, bearing, time):
         m = ['turn_right',
              'turn_left',
@@ -237,7 +265,7 @@ class TrajectoryGenerator:
         shuffle(m)
         pattern = choice(m)
         if pattern == "turn_right" or pattern == "turn_left":
-            turn = random_turn()
+            turn = random_turn(min=80, max=90)
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
                                                                                        timestamp,
                                                                                        first_lat,
@@ -265,23 +293,32 @@ class TrajectoryGenerator:
             'step_up_left': self.step_up_left(timestamp, lat, lon, speed, bearing, time),
             'step_down_left': self.step_down_left(timestamp, lat, lon, speed, bearing, time),
             'step_down_right': self.step_down_right(timestamp, lat, lon, speed, bearing, time),
+            'spiral_movement_right': self.step_down_right(timestamp, lat, lon, speed, bearing, time),
+            'spiral_movement_left': self.step_down_right(timestamp, lat, lon, speed, bearing, time),
             'random': self.random_movement(timestamp, lat, lon, speed, bearing, time)
         }
         data, timestamp, lat, lon, bearing = switcher.get(pattern, (0, 0, 0, 0))
         return data, timestamp, lat, lon, bearing
 
-    def data_generation(self, filename="testing_", n_test=10):
+    def data_generation(self, filename="", n_test=10):
         print_data_generation(self.__dict__)
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")
             os.makedirs("data")
             if len(os.listdir("data")) < n_test:
-                for d in self.movements:
+                first_movement = self.movements['first_movement']
+                second_movement = self.movements['second_movement']
+                for d in first_movement:
                     print("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
                         self.init_bearing = random_init_bearing(self.init_bearing)
-                        self.generator(pattern=d, filename=filename + d + "_"+str(i))
+                        self.generator(pattern=d, filename=filename+"first_movement_" + d + "_"+str(i))
+                for d in second_movement:
+                    print("now creating data for movement: {0:s}".format(d))
+                    for i in range(n_test):
+                        self.init_bearing = random_init_bearing(self.init_bearing)
+                        self.generator(pattern=d, filename=filename+"second_movement_" + d + "_"+str(i))
             else:
                 print("Done with generator")
                 return None
@@ -290,10 +327,19 @@ class TrajectoryGenerator:
             if os.path.isdir("data"):
                 if len(os.listdir("data")) < n_test:
                     print("Not enough files. creating more")
-                    for d in self.movements:
+                    first_movement = self.movements['first_movement']
+                    second_movement = self.movements['second_movement']
+                    for d in first_movement:
+                        print("now creating data for movement: {0:s}".format(d))
                         for i in range(n_test):
                             self.init_bearing = random_init_bearing(self.init_bearing)
-                            self.generator(pattern=d, filename=filename + d + "_" + str(i))
+                            self.generator(pattern=d, filename=filename + "first_movement_" + d + "_" + str(i))
+                    for d in second_movement:
+                        print("now creating data for movement: {0:s}".format(d))
+                        for i in range(n_test):
+                            self.init_bearing = random_init_bearing(self.init_bearing)
+                            self.generator(pattern=d,
+                                           filename=filename + "second_movement_" + d + "_" + str(i))
                 else:
                     print("Done with generator")
                     return None
