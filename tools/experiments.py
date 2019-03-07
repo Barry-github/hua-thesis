@@ -120,10 +120,10 @@ class Experiments:
                         "iterations": 20,
                         "verbose": True,
                         "normed": True,
-                        "add_noise_prob": 0.3,
+                        "add_noise_prob": 0.0,
                         "add_shapelet_prob": 0.3,
                         "wait": 10,
-                        "plot": True,
+                        "plot": None,
                         "remove_shapelet_prob": 0.3,
                         "crossover_prob": 0.66,
                         "n_jobs": 4}

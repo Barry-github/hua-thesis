@@ -1,4 +1,4 @@
-name: generator_trajectories
+name: gendis_test
 channels:
   - defaults
 dependencies:
@@ -87,5 +87,5 @@ dependencies:
     - sklearn==0.0
     - tqdm==4.23.2
     - tslearn==0.1.18.3
-prefix: /home/kotsos/anaconda3/envs/generator_trajectories
+prefix: /home/kapadais/anaconda3/envs/gendis_test
 
