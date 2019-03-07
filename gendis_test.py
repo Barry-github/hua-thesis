@@ -75,7 +75,7 @@ while count < 50:
     results = gendis_experiment()
     #n_exp = results.index(max(results))
 
-    file = "gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
+    file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
     file_output = open(file, 'a+')
     print("max accuracy: {0} at round :{1}".format(max(results),count),file=file_output)
     '''print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
