@@ -9,17 +9,19 @@ class Experiments:
         self.df_csv_options = []
         self.train_test_options = []
         self.gen_options = []
+        self.movements = []
         self.init_settings()
 
     def init_settings(self):
-        tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options = self.options_data()
+        tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements = self.options_data()
         self.tr_gen_options = tr_gen_options
         self.dt_gen_options = dt_gen_options
         self.df_csv_options = df_csv_options
         self.train_test_options = train_test_options
         self.gen_options = gen_options
-        # first setting
-        '''self.add_setting(self.tr_gen_options[0],
+        self.movements = movements
+        '''# first setting
+        self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
@@ -47,23 +49,61 @@ class Experiments:
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[2])'''
+                         self.gen_options[2])
         # sixth setting
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[3])
+                         self.gen_options[3],
+                         self.movements[0])
+        '''# seventh setting
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[1])
+        # eighth setting
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[2])
+        # ninth setting
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[3])
+        # tenth setting
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[4])
+        # eleventh setting
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[5])
+
 
     def get_setting(self):
         return self.settings
 
-    def add_setting(self, tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options):
+    def add_setting(self, tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements):
         setting = {"tr_gen_options": tr_gen_options,
                    "dt_gen_options": dt_gen_options,
                    "df_csv_options": df_csv_options,
                    "train_test_options": train_test_options,
-                   "gen_options": gen_options}
+                   "gen_options": gen_options,
+                   "movements": movements}
         self.settings.append(setting)
 
     def remove_setting(self, setting):
@@ -129,5 +169,19 @@ class Experiments:
                         "n_jobs": 4}
                        ]
 
-        return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options
+        movements = [{'first_movement': ['step_up_right'],  # 0 classic step-random classes
+                      'second_movement': ['random']},
+                     {'first_movement': ['step_up_right', 'step_down_right'],  # 1 two step-random classes
+                      'second_movement': ['random', 'random']},
+                     {'first_movement': ['spiral_movement_left'],  # 2 spiral_momvement-random
+                      'second_movement': ['random']},
+                     {'first_movement': ['spiral_movement_left', 'spiral_movement_right'],  # 3 two spiral-random classes
+                      'second_movement': ['random', 'random']},
+                     {'first_movement': ['spiral_movement_left'],  # 4 spiral-step classes
+                      'second_movement': ['step_up_right']},
+                     {'first_movement': ['spiral_movement_left', 'spiral_movement_right'],  # 5 two spiral-step classes
+                      'second_movement': ['step_up_right', 'step_down_right']},
+                     ]
+
+        return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements
 

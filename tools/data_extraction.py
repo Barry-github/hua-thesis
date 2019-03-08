@@ -26,20 +26,22 @@ class DataExtractor:
             if os.path.isdir("data"):
                 self.listdir = os.listdir("data")
                 self.set_sz_listdir(len(self.listdir))
-                for d in self.movements['first_movement']:
+                for idx, d in enumerate(self.movements['first_movement']):
                     first = []
                     for file in self.listdir:
                         if file.endswith(".csv"):
-                            if file.__contains__(d):
+                            check_file = "first_movement_" + str(idx)
+                            if file.__contains__(d) and file.__contains__(check_file):
                                 file = "data/" + file
                                 first.append(pd.read_csv(file))
 
                     dataframes_first_movement.append(first)
-                for d in self.movements['second_movement']:
+                for idx, d in enumerate(self.movements['second_movement']):
                     second = []
                     for file in self.listdir:
                         if file.endswith(".csv"):
-                            if file.__contains__(d):
+                            check_file = "second_movement_"+str(idx)
+                            if file.__contains__(d) and file.__contains__(check_file):
                                 file = "data/" + file
                                 second.append(pd.read_csv(file))
 

@@ -301,7 +301,7 @@ class TrajectoryGenerator:
         return data, timestamp, lat, lon, bearing
 
     def data_generation(self, filename="", n_test=10):
-        print_data_generation(self.__dict__)
+        #print_data_generation(self.__dict__)
         filename = "data/" + filename
         if not os.path.exists("data"):
             print("\nCreate directory \'data\' ")
@@ -309,16 +309,16 @@ class TrajectoryGenerator:
             if len(os.listdir("data")) < n_test:
                 first_movement = self.movements['first_movement']
                 second_movement = self.movements['second_movement']
-                for d in first_movement:
+                for idx, d in enumerate(first_movement):
                     print("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
                         self.init_bearing = random_init_bearing(self.init_bearing)
-                        self.generator(pattern=d, filename=filename+"first_movement_" + d + "_"+str(i))
-                for d in second_movement:
+                        self.generator(pattern=d, filename=filename+"first_movement_"+str(idx)+"_" +d + "_"+str(i))
+                for idx, d in enumerate(second_movement):
                     print("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
                         self.init_bearing = random_init_bearing(self.init_bearing)
-                        self.generator(pattern=d, filename=filename+"second_movement_" + d + "_"+str(i))
+                        self.generator(pattern=d, filename=filename+"second_movement_"+str(idx)+"_" + d + "_"+str(i))
             else:
                 print("Done with generator")
                 return None
@@ -329,17 +329,18 @@ class TrajectoryGenerator:
                     print("Not enough files. creating more")
                     first_movement = self.movements['first_movement']
                     second_movement = self.movements['second_movement']
-                    for d in first_movement:
-                        print("now creating data for movement: {0:s}".format(d))
-                        for i in range(n_test):
-                            self.init_bearing = random_init_bearing(self.init_bearing)
-                            self.generator(pattern=d, filename=filename + "first_movement_" + d + "_" + str(i))
-                    for d in second_movement:
+                    for idx, d in enumerate(first_movement):
                         print("now creating data for movement: {0:s}".format(d))
                         for i in range(n_test):
                             self.init_bearing = random_init_bearing(self.init_bearing)
                             self.generator(pattern=d,
-                                           filename=filename + "second_movement_" + d + "_" + str(i))
+                                           filename=filename + "first_movement_" + str(idx) + "_" + d + "_" + str(i))
+                    for idx, d in enumerate(second_movement):
+                        print("now creating data for movement: {0:s}".format(d))
+                        for i in range(n_test):
+                            self.init_bearing = random_init_bearing(self.init_bearing)
+                            self.generator(pattern=d,
+                                           filename=filename + "second_movement_" + str(idx) + "_" + d + "_" + str(i))
                 else:
                     print("Done with generator")
                     return None

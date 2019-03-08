@@ -103,6 +103,10 @@ def angle_diff(data):
     return new_arr
 
 
+def statistics_results(results):
+    print(results)
+
+
 def print_genetic_param(gen_ext):
     print("Starting fit in genetic extractor with:\n"
           "population size:{0:d}\n"

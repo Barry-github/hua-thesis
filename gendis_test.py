@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from tools.data_extraction import DataExtractor
 from tools.trajectory_generator import TrajectoryGenerator
-from tools.utils import standardize_data, print_genetic_param, print_settings, set_movements, angle_diff
+from tools.utils import standardize_data, print_genetic_param, print_settings, set_movements, angle_diff ,statistics_results
 from tools.experiments import Experiments
 
 np.random.seed(1337)  # Random seed for reproducibility
@@ -16,18 +16,14 @@ np.random.seed(1337)  # Random seed for reproducibility
 def gendis_experiment():
     accuracy_results = []
     for idx, sc in enumerate(settings):
+        print("####################### Start of Experiment no: {0} #######################\n".format(idx+1))
         first = time.time()
         tr_gen_options = sc["tr_gen_options"]
         dt_gen_options = sc["dt_gen_options"]
         df_csv_options = sc["df_csv_options"]
         train_test_options = sc["train_test_options"]
         gen_options = sc["gen_options"]
-
-        first_movement = ['step_up_right']
-        second_movement = ['random']
-        movements = {'first_movement': first_movement,
-                     'second_movement': second_movement}
-        set_movements(movements)
+        set_movements(sc['movements'])
 
         # Create files if not created
         tr_gen = TrajectoryGenerator(**tr_gen_options)
@@ -49,7 +45,7 @@ def gendis_experiment():
         #x_test = angle_diff(x_test)
 
         genetic_extractor = GeneticExtractor(**gen_options)
-        print_genetic_param(genetic_extractor)
+        #print_genetic_param(genetic_extractor)
 
         genetic_extractor.fit(x_train, y_train)
         distances_train = genetic_extractor.transform(x_train)
@@ -63,7 +59,8 @@ def gendis_experiment():
         print('Accuracy = {}'.format(accuracy_result))
         accuracy_results.append(accuracy_result)
         delta = time.time() - first
-        print("time passed on this experiment: {0}".format(delta))
+        print("time passed on this experiment: {0} minutes".format(delta/60))
+        print("####################### End of Experiment no: {0} #######################\n".format(idx+1))
     return accuracy_results
 
 
@@ -72,14 +69,15 @@ settings = exp.get_setting()
 if not os.path.exists("outputs"):
     os.makedirs("outputs")
 count = 0
-while count < 10:
+final_results = []
+while count < 1:
+    print("************************* Loop no: {0}  *************************".format(count + 1))
     results = gendis_experiment()
-    #n_exp = results.index(max(results))
-    print("####################### Experiment no: {0}  #######################".format(count + 1))
-
+    final_results = final_results.append(results)
+    n_exp = results.index(max(results))
     file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
     file_output = open(file, 'a+')
-    print("max accuracy: {0} at round :{1}".format(max(results),count),file=file_output)
+    print("max accuracy: {0} (exp no: {2}) at round :{1}".format(max(results), count, n_exp+1), file=file_output)
     '''print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
 
     print("\nAll experiments results", file=file_output)
@@ -89,5 +87,5 @@ while count < 10:
         print("Accuracy: {0}".format(results[idx]), file=file_output)'''
     file_output.close()
     count = count + 1
-    print("####################### End of Experiment no: {0} #######################\n".format(count))
-
+    print("************************* End of Loop no: {0} *************************\n".format(count))
+statistics_results(final_results)
