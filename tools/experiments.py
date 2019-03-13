@@ -93,7 +93,6 @@ class Experiments:
                          self.gen_options[3],
                          self.movements[5])
 
-
     def get_setting(self):
         return self.settings
 
