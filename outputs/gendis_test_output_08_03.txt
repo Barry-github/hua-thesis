@@ -1,1 +1,12 @@
-max accuracy: 0.525 (exp no: 2) at round :0
+max accuracy: 0.9666666666666667 at round :0
+max accuracy: 0.8666666666666667 at round :1
+max accuracy: 0.8666666666666667 at round :2
+max accuracy: 0.9 at round :3
+max accuracy: 0.8666666666666667 at round :4
+max accuracy: 0.9 at round :5
+max accuracy: 0.9 at round :6
+max accuracy: 0.9166666666666666 at round :7
+max accuracy: 0.95 at round :8
+max accuracy: 0.8333333333333334 at round :9
+max accuracy: 0.8916666666666667 (exp no: 3) at round :0
+max accuracy: 0.575 (exp no: 2) at round :0
