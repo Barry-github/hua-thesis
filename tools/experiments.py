@@ -57,7 +57,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[0])
-        '''# seventh setting
+        # seventh setting
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
@@ -78,7 +78,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[3])
-        # tenth setting
+        '''# tenth setting
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
