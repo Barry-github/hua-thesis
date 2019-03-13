@@ -1,0 +1,11 @@
+max accuracy: 1.0 (exp no: 1) at round :0
+max accuracy: 0.9833333333333333 (exp no: 1) at round :0
+max accuracy: 1.0 (exp no: 1) at round :1
+max accuracy: 1.0 (exp no: 1) at round :2
+max accuracy: 1.0 (exp no: 1) at round :3
+max accuracy: 1.0 (exp no: 1) at round :4
+max accuracy: 1.0 (exp no: 1) at round :5
+max accuracy: 1.0 (exp no: 1) at round :6
+max accuracy: 1.0 (exp no: 1) at round :7
+max accuracy: 0.975 (exp no: 2) at round :8
+max accuracy: 1.0 (exp no: 1) at round :9
