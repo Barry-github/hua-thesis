@@ -70,10 +70,10 @@ if not os.path.exists("outputs"):
     os.makedirs("outputs")
 count = 0
 final_results = []
-while count < 1:
+while count < 10:
     print("************************* Loop no: {0}  *************************".format(count + 1))
     results = gendis_experiment()
-    final_results = final_results.append(results)
+    final_results.append(results)
     n_exp = results.index(max(results))
     file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
     file_output = open(file, 'a+')
