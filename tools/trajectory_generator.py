@@ -235,7 +235,7 @@ class TrajectoryGenerator:
     def spiral_movement_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
         turn = random_turn(min=45, max=80)
-        loops = [2,2,2,2,2,2,2,3,3,3,3,3]
+        loops = [2,2,2,2,2,2,2,3,3,3]
         tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                 first_lat=first_lat,
                                                                 first_lon=first_lon,
@@ -250,7 +250,7 @@ class TrajectoryGenerator:
     def spiral_movement_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
         turn = random_turn(min=45, max=80)
-        loops = [2,2,2,2,2,2,2,3,3,3,3,3]
+        loops = [2,2,2,2,2,2,2,3,3,3]
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
                                                                  first_lat=first_lat,
                                                                  first_lon=first_lon,
