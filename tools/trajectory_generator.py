@@ -192,11 +192,11 @@ class TrajectoryGenerator:
                                                                 time=time)
         data.extend(tempdata)
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
-                                                            first_lat=lat,
-                                                            first_lon=lon,
-                                                            speed=speed,
-                                                            bearing=bearing,
-                                                            time=time)
+                                                                 first_lat=lat,
+                                                                 first_lon=lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
@@ -210,11 +210,11 @@ class TrajectoryGenerator:
                                                                  time=time)
         data.extend(tempdata)
         tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
-                                                           first_lat=lat,
-                                                           first_lon=lon,
-                                                           speed=speed,
-                                                           bearing=bearing,
-                                                           time=time)
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
@@ -268,11 +268,13 @@ class TrajectoryGenerator:
 
     def expanding_square_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
+        lat = first_lat
+        lon = first_lon
         i = 1
         while i <= 6:
             loops = [i]
             tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
-                                                                    first_lat=first_lat,
+                                                                    first_lat=lat,
                                                                     first_lon=first_lon,
                                                                     speed=speed,
                                                                     bearing=bearing,
@@ -286,16 +288,18 @@ class TrajectoryGenerator:
 
     def expanding_square_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
+        lat = first_lat
+        lon = first_lon
         i = 1
         while i <= 6:
             loops = [i]
             tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
-                                                                      first_lat=first_lat,
-                                                                      first_lon=first_lon,
-                                                                      speed=speed,
-                                                                      bearing=bearing,
-                                                                      time=time,
-                                                                      loops=loops)
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops)
 
             i = i +1
             data.extend(tempdata)
