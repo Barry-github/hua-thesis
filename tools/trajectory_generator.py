@@ -271,11 +271,11 @@ class TrajectoryGenerator:
         lat = first_lat
         lon = first_lon
         i = 1
-        while i <= 6:
+        while i <= 7:
             loops = [i]
             tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                     first_lat=lat,
-                                                                    first_lon=first_lon,
+                                                                    first_lon=lon,
                                                                     speed=speed,
                                                                     bearing=bearing,
                                                                     time=time,
@@ -299,9 +299,10 @@ class TrajectoryGenerator:
                                                                      speed=speed,
                                                                      bearing=bearing,
                                                                      time=time,
-                                                                     loops=loops)
+                                                                     loops=loops,
+                                                                     set_speed_noise=False)
 
-            i = i +1
+            i = i + 1
             data.extend(tempdata)
 
         return data, timestamp, lat, lon, bearing
