@@ -328,21 +328,21 @@ class TrajectoryGenerator:
         data.extend(tempdata)
 
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
-                                                                first_lat=lat,
-                                                                first_lon=lon,
-                                                                speed=speed,
-                                                                bearing=bearing,
-                                                                time=time,
-                                                                loops=loops, set_speed_noise=False)
+                                                                 first_lat=lat,
+                                                                 first_lon=lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time,
+                                                                 loops=loops, set_speed_noise=False)
         data.extend(tempdata)
 
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
-                                                                first_lat=lat,
-                                                                first_lon=lon,
-                                                                speed=speed,
-                                                                bearing=bearing,
-                                                                time=time,
-                                                                loops=loops, set_speed_noise=False)
+                                                                 first_lat=lat,
+                                                                 first_lon=lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time,
+                                                                 loops=loops, set_speed_noise=False)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
@@ -386,6 +386,77 @@ class TrajectoryGenerator:
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
+    def sector_pattern_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        lat = first_lat
+        lon = first_lon
+        radius = choice([1, 2])
+        i = 0
+        while i <= 9:
+            turn = random_turn(min=110,max=130)
+            loops = [radius]
+            tempdata, timestamp, lat, lon, bearing = self.go_straight(timestamp=timestamp,
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops,
+                                                                     set_speed_noise=False)
+
+            data.extend(tempdata)
+
+            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops,
+                                                                     turn=turn,
+                                                                     set_speed_noise=False)
+
+            data.extend(tempdata)
+            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops,
+                                                                     turn=turn,
+                                                                     set_speed_noise=False)
+
+            data.extend(tempdata)
+
+            i = i + 1
+
+        return data, timestamp, lat, lon, bearing
+
+    def sector_pattern_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        lat = first_lat
+        lon = first_lon
+        radius = choice([2, 3, 4, 5])
+        loops = [radius]
+        i = 1
+        while i <= 9:
+            turn = 30
+            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops,
+                                                                     turn=turn,
+                                                                     set_speed_noise=False)
+
+            i = i + 1
+            data.extend(tempdata)
+
+        return data, timestamp, lat, lon, bearing
+
     def random_movement(self, timestamp, first_lat, first_lon, speed, bearing, time):
         m = ['turn_right',
              'turn_left',
@@ -427,6 +498,8 @@ class TrajectoryGenerator:
             'expanding_square_left': self.expanding_square_left(timestamp, lat, lon, speed, bearing, time),
             'creeping_line_left': self.creeping_line_left(timestamp, lat, lon, speed, bearing, time),
             'creeping_line_right': self.creeping_line_right(timestamp, lat, lon, speed, bearing, time),
+            'sector_pattern_left': self.sector_pattern_left(timestamp, lat, lon, speed, bearing, time),
+            'sector_pattern_right': self.sector_pattern_right(timestamp, lat, lon, speed, bearing, time),
             'random': self.random_movement(timestamp, lat, lon, speed, bearing, time)
         }
         data, timestamp, lat, lon, bearing = switcher.get(pattern, (0, 0, 0, 0, 0))
