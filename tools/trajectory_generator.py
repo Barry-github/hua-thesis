@@ -306,6 +306,86 @@ class TrajectoryGenerator:
 
         return data, timestamp, lat, lon, bearing
 
+    def creeping_line_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        loops = [2,2,2,2,2,2,2,2,3,3,3]
+        tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
+                                                                first_lat=first_lat,
+                                                                first_lon=first_lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops,set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+        return data, timestamp, lat, lon, bearing
+
+    def creeping_line_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
+        data = []
+        loops = [2,2,2,2,2,2,2,2,3,3,3]
+        tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                 first_lat=first_lat,
+                                                                 first_lon=first_lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time,
+                                                                 loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                 first_lat=lat,
+                                                                 first_lon=lon,
+                                                                 speed=speed,
+                                                                 bearing=bearing,
+                                                                 time=time,
+                                                                 loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+
+        tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
+                                                                first_lat=lat,
+                                                                first_lon=lon,
+                                                                speed=speed,
+                                                                bearing=bearing,
+                                                                time=time,
+                                                                loops=loops, set_speed_noise=False)
+        data.extend(tempdata)
+        return data, timestamp, lat, lon, bearing
+
     def random_movement(self, timestamp, first_lat, first_lon, speed, bearing, time):
         m = ['turn_right',
              'turn_left',
@@ -345,6 +425,8 @@ class TrajectoryGenerator:
             'spiral_movement_left': self.spiral_movement_left(timestamp, lat, lon, speed, bearing, time),
             'expanding_square_right': self.expanding_square_right(timestamp, lat, lon, speed, bearing, time),
             'expanding_square_left': self.expanding_square_left(timestamp, lat, lon, speed, bearing, time),
+            'creeping_line_left': self.creeping_line_left(timestamp, lat, lon, speed, bearing, time),
+            'creeping_line_right': self.creeping_line_right(timestamp, lat, lon, speed, bearing, time),
             'random': self.random_movement(timestamp, lat, lon, speed, bearing, time)
         }
         data, timestamp, lat, lon, bearing = switcher.get(pattern, (0, 0, 0, 0, 0))
