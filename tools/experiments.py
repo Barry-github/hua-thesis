@@ -20,78 +20,127 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         self.movements = movements
-        '''# first setting
+        '''# first setting  100 samples 5 iterations 
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[0])
-        # second setting
+                         self.gen_options[0],
+                         self.movements[0])
+        # second setting 150 samples 5 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[0])
-        # third setting
+                         self.gen_options[0],
+                         self.movements[0])
+        # third setting 100 samples 10 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[1])
-        # fourth setting
+                         self.gen_options[1],
+                         self.movements[0])
+        # fourth setting 100 samples 15 iterations 
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[2])
-        # fifth setting
+                         self.gen_options[2],
+                         self.movements[0])
+        # fifth setting 150 samples 15 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
-                         self.gen_options[2])
-        # sixth setting
+                         self.gen_options[2],
+                         self.movements[0])
+        # sixth setting  150 samples 20 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[0])
-        # seventh setting
+        # seventh setting 150 samples 20 iterations two step classes for movements
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[1])
-        # eighth setting
+        # eighth setting 150 samples 20 iterations spiral 
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[2])
-        # ninth setting
+        # ninth setting 150 samples 20 iterations two spiral classes for movements
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[3])
-        '''# tenth setting
+        # tenth setting 150 samples 20 iterations spiral - steps
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[4])
-        # eleventh setting
+        # eleventh setting 150 samples 20 iterations two spiral - steps
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[5])
+
+    '''
+        # twelfth setting 150 samples 20 iterations expanding square - random
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[6])
+        # thirteenth  setting 150 samples 20 iterations expanding square -steps
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[8])
+        # fourteenth  setting 150 samples 20 iterations creeping line - random
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[10])
+        # fifteenth setting 150 samples 20 iterations creeping line - steps
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[12])
+        # sixteenth setting 150 samples 20 iterations sector - random
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[14])
+        # seventeenth setting 150 samples 20 iterations sector - random
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[1],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[3],
+                         self.movements[16])
 
     def get_setting(self):
         return self.settings
@@ -179,6 +228,30 @@ class Experiments:
                      {'first_movement': ['spiral_movement_left'],  # 4 spiral-step classes
                       'second_movement': ['step_up_right']},
                      {'first_movement': ['spiral_movement_left', 'spiral_movement_right'],  # 5 two spiral-step classes
+                      'second_movement': ['step_up_right', 'step_down_right']},
+                     {'first_movement': ['expanding_square_right'],  # 6 expanding_square-random
+                      'second_movement': ['random']},
+                     {'first_movement': ['expanding_square_right', 'expanding_square_left'],  # 7 two expanding_square-random
+                      'second_movement': ['random', 'random']},
+                     {'first_movement': ['expanding_square_right'],  # 8 expanding_square_-step classes
+                      'second_movement': ['step_up_right']},
+                     {'first_movement': ['expanding_square_right', 'expanding_square_left'],  # 9 two expanding_square_-step classes
+                      'second_movement': ['step_up_right', 'step_down_right']},
+                     {'first_movement': ['creeping_line_left'],  # 10 creeping_line-random
+                      'second_movement': ['random']},
+                     {'first_movement': ['creeping_line_right', 'creeping_line_left'], # 11 two creeping_line_left-random
+                      'second_movement': ['random', 'random']},
+                     {'first_movement': ['creeping_line_left'],  # 12 creeping_line_left-step classes
+                      'second_movement': ['step_up_right']},
+                     {'first_movement': ['creeping_line_right', 'creeping_line_left'], # 13 two sector_pattern-step classes
+                      'second_movement': ['step_up_right', 'step_down_right']},
+                     {'first_movement': ['sector_pattern_left'],  # 14 creeping_line-random
+                      'second_movement': ['random']},
+                     {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 15 two sector_pattern-random
+                      'second_movement': ['random', 'random']},
+                     {'first_movement': ['sector_pattern_left'],  # 16 sector_pattern-step classes
+                      'second_movement': ['step_up_right']},
+                     {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 17 two sector_pattern-step classes
                       'second_movement': ['step_up_right', 'step_down_right']},
                      ]
 
