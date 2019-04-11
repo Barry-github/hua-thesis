@@ -71,9 +71,22 @@ class TrajectoryGenerator:
             writer.writerows(data)
             csv_File.close()
 
-    def turn_right(self, timestamp, first_lat, first_lon, speed, bearing, time, turn=90, loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],set_speed_noise=True):
+    def turn_right(self,
+                   timestamp,
+                   first_lat,
+                   first_lon,
+                   speed,
+                   bearing,
+                   time,
+                   turn=90,
+                   loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],
+                   set_bearing_noise=True,
+                   set_speed_noise=True):
         data = []
-        bearing = bearing_noise((bearing + turn) % 360)
+        if set_bearing_noise:
+            bearing = bearing_noise((bearing + turn) % 360)
+        else:
+            bearing = (bearing + turn) % 360
         if set_speed_noise:
             speed = speed_noise(speed)
         last_location = [first_lat, first_lon]
@@ -81,8 +94,6 @@ class TrajectoryGenerator:
         count = 1
         while count <= loops:
             #time = freq_sampling_noise(time)
-            random_bearing_noise = random_turn(min=0, max=4)
-            bearing = bearing - random_bearing_noise
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -96,18 +107,33 @@ class TrajectoryGenerator:
             count = count + 1
         return data, timestamp, last_location[0], last_location[1], bearing
 
-    def turn_left(self, timestamp, first_lat, first_lon, speed, bearing, time, turn=90, loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],set_speed_noise=True):
+    def turn_left(self,
+                  timestamp,
+                  first_lat,
+                  first_lon,
+                  speed,
+                  bearing,
+                  time,
+                  turn=90,
+                  loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],
+                  set_bearing_noise=True,
+                  set_speed_noise=True):
         data = []
-        bearing = bearing_noise((bearing - turn) % 360)
+
+        if set_bearing_noise:
+            bearing = bearing_noise((bearing - turn) % 360)
+        else:
+            bearing = (bearing - turn) % 360
+
         if set_speed_noise:
             speed = speed_noise(speed)
+
         last_location = [first_lat, first_lon]
         loops = choice(loops)
+
         count = 1
         while count <= loops:
             #time = freq_sampling_noise(time)
-            random_bearing_noise = random_turn(min=0, max=4)
-            bearing = bearing - random_bearing_noise
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -131,8 +157,6 @@ class TrajectoryGenerator:
         count = 1
         while count <= loops:
             # time = freq_sampling_noise(time)
-            random_bearing_noise = random_turn(min=0, max=4)
-            bearing = bearing - random_bearing_noise
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -156,8 +180,6 @@ class TrajectoryGenerator:
         count = 1
         while count <= loops:
             # time = freq_sampling_noise(time)
-            random_bearing_noise = random_turn(min=0, max=4)
-            bearing = bearing - random_bearing_noise
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -316,7 +338,7 @@ class TrajectoryGenerator:
 
     def creeping_line_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
-        loops = [2,2,2,2,2,2,2,2,3,3,3]
+        loops = [2]
         tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                 first_lat=first_lat,
                                                                 first_lon=first_lon,
@@ -324,6 +346,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
+                                                                set_bearing_noise=False,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -334,6 +357,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
+                                                                set_bearing_noise=False,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -344,6 +368,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
+                                                                 set_bearing_noise=False,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -354,13 +379,14 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
+                                                                 set_bearing_noise=False,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
 
     def creeping_line_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
-        loops = [2,2,2,2,2,2,2,2,3,3,3]
+        loops = [2]
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
                                                                  first_lat=first_lat,
                                                                  first_lon=first_lon,
@@ -368,6 +394,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
+                                                                 set_bearing_noise=False,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -378,6 +405,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
+                                                                 set_bearing_noise=False,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -388,6 +416,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
+                                                                set_bearing_noise=False,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -398,6 +427,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
+                                                                set_bearing_noise=False,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
@@ -406,10 +436,10 @@ class TrajectoryGenerator:
         data = []
         lat = first_lat
         lon = first_lon
-        radius = choice([1, 2])
+        radius = choice([2, 3, 4])
         i = 0
         while i <= 9:
-            turn = random_turn(min=110,max=130)
+            turn = random_turn(min=110, max=130)
             loops = [radius]
             tempdata, timestamp, lat, lon, bearing = self.go_straight(timestamp=timestamp,
                                                                      first_lat=lat,
@@ -422,7 +452,7 @@ class TrajectoryGenerator:
 
             data.extend(tempdata)
 
-            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+            tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                      first_lat=lat,
                                                                      first_lon=lon,
                                                                      speed=speed,
@@ -433,7 +463,7 @@ class TrajectoryGenerator:
                                                                      set_speed_noise=False)
 
             data.extend(tempdata)
-            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+            tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                      first_lat=lat,
                                                                      first_lon=lon,
                                                                      speed=speed,
@@ -453,11 +483,22 @@ class TrajectoryGenerator:
         data = []
         lat = first_lat
         lon = first_lon
-        radius = choice([2, 3, 4, 5])
-        loops = [radius]
+        radius = choice([2, 3, 4])
         i = 1
         while i <= 9:
-            turn = 30
+            turn = random_turn(min=110, max=130)
+            loops = [radius]
+            tempdata, timestamp, lat, lon, bearing = self.go_straight(timestamp=timestamp,
+                                                                      first_lat=lat,
+                                                                      first_lon=lon,
+                                                                      speed=speed,
+                                                                      bearing=bearing,
+                                                                      time=time,
+                                                                      loops=loops,
+                                                                      set_speed_noise=False)
+
+            data.extend(tempdata)
+
             tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
                                                                      first_lat=lat,
                                                                      first_lon=lon,
@@ -467,6 +508,19 @@ class TrajectoryGenerator:
                                                                      loops=loops,
                                                                      turn=turn,
                                                                      set_speed_noise=False)
+
+            data.extend(tempdata)
+            tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
+                                                                     first_lat=lat,
+                                                                     first_lon=lon,
+                                                                     speed=speed,
+                                                                     bearing=bearing,
+                                                                     time=time,
+                                                                     loops=loops,
+                                                                     turn=turn,
+                                                                     set_speed_noise=False)
+
+            data.extend(tempdata)
 
             i = i + 1
             data.extend(tempdata)
@@ -479,8 +533,9 @@ class TrajectoryGenerator:
              'go_straight']
         shuffle(m)
         pattern = choice(m)
+        #loops = [30, 40]
         if pattern == "turn_right" or pattern == "turn_left":
-            turn = random_turn(min=80, max=90)
+            turn = random_turn(min=20, max=50)
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
                                                                                        timestamp,
                                                                                        first_lat,
@@ -488,7 +543,7 @@ class TrajectoryGenerator:
                                                                                        speed,
                                                                                        bearing,
                                                                                        time,
-                                                                                       turn)
+                                                                                       turn,)
         else:
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
                                                                                        timestamp,
@@ -496,7 +551,7 @@ class TrajectoryGenerator:
                                                                                        first_lon,
                                                                                        speed,
                                                                                        bearing,
-                                                                                       time)
+                                                                                       time,)
 
         return data, timestamp, lat, lon, bearing
 

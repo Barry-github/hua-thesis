@@ -1,4 +1,4 @@
-from math import degrees, atan2, asin, sin, cos, radians
+from math import degrees, atan2, asin, sin, cos, radians, sqrt
 from random import random, randint, choice
 from sklearn import preprocessing
 import pandas as pd
@@ -30,6 +30,12 @@ def speed_noise(speed):
 def freq_sampling_noise(freq):
 
     return random_noise(x=freq, limit_down=3, limit_up=15)
+
+
+def get_distance(lat1, lon1, lat2, lon2):
+    p = 0.017453292519943295  # Pi/180
+    a = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
+    return 12742 * asin(sqrt(a)) * 1000  # 2*R*asin...
 
 
 def calc_distance(speed, time):
@@ -92,13 +98,13 @@ def angle_diff(data):
             i = 0
             while i < len(arr):
                 if i+1 == len(arr):
-                    break;
+                    break
                 result = arr[i+1]-arr[i]
-                if result !=0 and abs(result) >=180:
+                if result != 0 and abs(result) >= 180:
                         result = abs(abs(result) - 360)
                 temp_arr.append(result)
                 i = i+1
-            new_arr=np.append(new_arr, temp_arr).astype(int)
+            new_arr = np.append(new_arr, temp_arr).astype(int)
     new_arr = np.reshape(new_arr, (data.shape[0], data.shape[1]-1))
     return new_arr
 

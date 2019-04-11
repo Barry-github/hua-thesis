@@ -62,7 +62,6 @@ class DataExtractor:
                 self.train_df[1] = self.train_df[1].append(self.dataframes_second_movement[idx][d], ignore_index=True)
             for d in range(self.train_range, len(self.dataframes_second_movement[idx])):
                 self.test_df[1] = self.test_df[1].append(self.dataframes_second_movement[idx][d], ignore_index=True)
-
         n_split = int(len(self.train_df[0]) / split)
         self.train_df[0] = np.split(self.train_df[0], n_split)
         self.train_df[1] = np.split(self.train_df[1], n_split)
