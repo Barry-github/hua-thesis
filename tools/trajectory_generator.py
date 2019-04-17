@@ -10,6 +10,7 @@ from tools.utils import bearing_noise, random_init_bearing, random_turn, speed_n
 
 
 class TrajectoryGenerator:
+    import tools.utils
     def __init__(self,
                  first_lat=37.295493,
                  first_lon=23.824322,
@@ -631,4 +632,3 @@ class TrajectoryGenerator:
         shutil.rmtree("data") if os.path.isdir("data") else None
         for x in os.listdir(os.getcwd()):
             os.remove(os.path.basename(x)) if x.endswith(".csv") else None
-

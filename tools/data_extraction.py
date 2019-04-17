@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from tools.utils import get_movements
+
 
 
 class DataExtractor:
@@ -18,6 +18,7 @@ class DataExtractor:
         self.train_range = int(len(self.dataframes_first_movement[0]) * self.train_samples)
 
     def read_datasets(self):
+        from tools.utils import get_movements
         print("\nReading the data files", end='')
         self.movements = get_movements()
         dataframes_first_movement = []
@@ -146,5 +147,3 @@ class DataExtractor:
                 return True
         else:
             return False
-
-

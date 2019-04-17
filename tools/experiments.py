@@ -20,7 +20,15 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         self.movements = movements
-        '''# first setting  100 samples 5 iterations 
+        #test_experiment
+        self.add_setting(self.tr_gen_options[0],
+                         self.dt_gen_options[0],
+                         self.df_csv_options[0],
+                         self.train_test_options[0],
+                         self.gen_options[0],
+                         self.movements[0])
+
+        '''# first setting  100 samples 5 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
@@ -41,7 +49,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[1],
                          self.movements[0])
-        # fourth setting 100 samples 15 iterations 
+        # fourth setting 100 samples 15 iterations
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
@@ -69,7 +77,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[1])
-        # eighth setting 150 samples 20 iterations spiral 
+        # eighth setting 150 samples 20 iterations spiral
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
@@ -98,7 +106,7 @@ class Experiments:
                          self.gen_options[3],
                          self.movements[5])
 
-    '''
+
         # twelfth setting 150 samples 20 iterations expanding square - random
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
@@ -141,6 +149,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[16])
+                             '''
 
     def get_setting(self):
         return self.settings
@@ -162,6 +171,27 @@ class Experiments:
 
     @staticmethod
     def options_data():
+        #test options_data
+        tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": True}]
+        dt_gen_options = [{"n_test": 10}]
+        df_csv_options = [{"ts_class": "Bearing"}]
+        train_test_options = [{"split": 25}]
+        gen_options = [{"population_size": 25,
+                        "iterations": 5,
+                        "verbose": True,
+                        "normed": True,
+                        "add_noise_prob": 0.0,
+                        "add_shapelet_prob": 0.3,
+                        "wait": 10,
+                        "plot": None,
+                        "remove_shapelet_prob": 0.3,
+                        "crossover_prob": 0.66,
+                        "n_jobs": 4}
+                       ]
+        movements = [{'first_movement': ['creeping_line_left'],  # 10 creeping_line-random
+                    'second_movement': ['random']}
+                     ]
+        '''
         tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": True}]
 
         dt_gen_options = [{"n_test": 100},
@@ -178,7 +208,7 @@ class Experiments:
                         "add_noise_prob": 0.3,
                         "add_shapelet_prob": 0.3,
                         "wait": 10,
-                        "plot": True,
+                        "plot": None,
                         "remove_shapelet_prob": 0.3,
                         "crossover_prob": 0.66,
                         "n_jobs": 4},
@@ -189,7 +219,7 @@ class Experiments:
                         "add_noise_prob": 0.3,
                         "add_shapelet_prob": 0.3,
                         "wait": 10,
-                        "plot": True,
+                        "plot": None,
                         "remove_shapelet_prob": 0.3,
                         "crossover_prob": 0.66,
                         "n_jobs": 4},
@@ -200,7 +230,7 @@ class Experiments:
                         "add_noise_prob": 0.3,
                         "add_shapelet_prob": 0.3,
                         "wait": 10,
-                        "plot": True,
+                        "plot": None,
                         "remove_shapelet_prob": 0.3,
                         "crossover_prob": 0.66,
                         "n_jobs": 4},
@@ -254,6 +284,5 @@ class Experiments:
                      {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 17 two sector_pattern-step classes
                       'second_movement': ['step_up_right', 'step_down_right']},
                      ]
-
+        '''
         return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements
-
