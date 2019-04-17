@@ -338,7 +338,7 @@ class TrajectoryGenerator:
 
     def creeping_line_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
-        loops = [2]
+        loops = [3]
         tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                 first_lat=first_lat,
                                                                 first_lon=first_lon,
@@ -386,7 +386,7 @@ class TrajectoryGenerator:
 
     def creeping_line_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
-        loops = [2]
+        loops = [3]
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
                                                                  first_lat=first_lat,
                                                                  first_lon=first_lon,
