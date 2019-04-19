@@ -1,11 +1,9 @@
 import csv
 import os
 import shutil
-from random import shuffle, choice
-
 import pandas as pd
+from random import shuffle, choice
 from pandas.tseries.offsets import Minute
-
 from tools.utils import bearing_noise, random_init_bearing, random_turn, speed_noise, calc_distance, destination, get_movements, print_data_generation
 
 

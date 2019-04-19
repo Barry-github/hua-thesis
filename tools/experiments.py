@@ -1,6 +1,5 @@
 from pandas import Timestamp as Ts
 
-
 class Experiments:
     def __init__(self):
         self.settings = []
@@ -20,16 +19,16 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         self.movements = movements
-        #test_experiment
+        '''#test_experiment
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[0],
                          self.movements[0])
-
-        '''# first setting  100 samples 5 iterations
-        self.add_setting(self.tr_gen_options[0],
+                         '''
+        # first setting  100 samples 5 iterations
+        '''self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
@@ -121,14 +120,14 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[8])
-        # fourteenth  setting 150 samples 20 iterations creeping line - random
+        '''# fourteenth  setting 150 samples 20 iterations creeping line - random
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[10])
-        # fifteenth setting 150 samples 20 iterations creeping line - steps
+        '''# fifteenth setting 150 samples 20 iterations creeping line - steps
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[1],
                          self.df_csv_options[0],
@@ -172,7 +171,7 @@ class Experiments:
     @staticmethod
     def options_data():
         #test options_data
-        tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": True}]
+        '''tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": True}]
         dt_gen_options = [{"n_test": 10}]
         df_csv_options = [{"ts_class": "Bearing"}]
         train_test_options = [{"split": 25}]
@@ -284,5 +283,4 @@ class Experiments:
                      {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 17 two sector_pattern-step classes
                       'second_movement': ['step_up_right', 'step_down_right']},
                      ]
-        '''
         return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements

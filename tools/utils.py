@@ -1,21 +1,23 @@
 from math import degrees, atan2, asin, sin, cos, radians, sqrt
 from random import random, randint, choice
 from sklearn import preprocessing
+from statistics import mean
 import datetime
-import time
 import os
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-from gendis.genetic import GeneticExtractor
-
-np.random.seed(1337)  # Random seed for reproducibility
-
 
 global_vals = {'movements': {'first_movement': ['step_up_right'], 'second_movement': ['random']}
             }
 
+def get_movements():
+    return global_vals['movements']
+
+
+def set_movements(movements):
+    global_vals['movements'] = movements
+
+#trajectory generator's functions
 def random_turn(min=0, max=90):
     return randint(min, max)
 
@@ -57,7 +59,115 @@ def random_noise(x, limit_up, limit_down=0):
         else:
             return abs(x - randint(limit_down, limit_up))
 
-#simpla scale down given the sampling of fake data and the size of real dataset
+
+
+def destination(lat, lon, distance, bearing):
+    R = 6378.1  # Radius of the Earth
+    bearing = radians(bearing)
+    lat1 = radians(lat)  # Current lat point converted to radians
+    lon1 = radians(lon)  # Current long point converted to radians
+
+    lat2 = asin(sin(lat1) * cos(distance / R) + cos(lat1) * sin(distance / R) * cos(bearing))
+    lon2 = lon1 + atan2(sin(bearing) * sin(distance / R) * cos(lat1), cos(distance / R) - sin(lat1) * sin(lat2))
+
+    lat2 = degrees(lat2)
+    lon2 = degrees(lon2)
+    return lat2, lon2
+
+
+def timestamp_converter(data):
+    new_array = np.empty(shape=data.shape)
+    for idx, d in enumerate(data):
+        if isinstance(d, str):
+            new_array[idx] = int(pd.Timestamp(d).timestamp())
+        else:
+            return data
+    return new_array
+
+
+#printing functions
+
+def statistics_results(results):
+    print(results)
+
+
+def print_genetic_param(gen_ext):
+    print("Starting fit in genetic extractor with:\n"
+          "population size:{0:d}\n"
+          "iterations: {1:d}\n"
+          "normed: {2}\n"
+          "noise_prob: {3}\n"
+          "add_shapelet_prob: {4}\n"
+          "remove_shapelet_prob: {5}\n"
+          "crossover_prob: {6}\n".format(gen_ext.population_size,
+                                         gen_ext.iterations,
+                                         gen_ext.normed,
+                                         gen_ext.add_noise_prob,
+                                         gen_ext.add_shapelet_prob,
+                                         gen_ext.remove_shapelet_prob,
+                                         gen_ext.crossover_prob))
+
+
+def print_data_generation(dict):
+    print("\nStarting the generator with attributes: \n"
+          "Original latitude: {first_lat}\n"
+          "Original longitude: {first_lon}\n"
+          "Initial bearing: {init_bearing}\n"
+          "Initial speed: {init_speed}\n"
+          "Number of samples: {samples}\n"
+          "Starting time of measurements: {timestamp}\n"
+          "With initial frequency of collected data: {freq} min\n"
+          "and hard reset of data: {reset_data}".format(**dict))
+
+
+def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options,file=None):
+    if file is not None:
+        for key, value in trajectory_generator_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nData Extractor settings",file=file)
+        for key, value in data_generation_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nClasses",file=file)
+        for key, value in define_csvs_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+        print("\nGenetic Options",file=file)
+        for key, value in genetic_options.items():
+            print("{0}: {1}".format(key, value),file=file)
+    else:
+        for key, value in trajectory_generator_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nData Extractor settings")
+        for key, value in data_generation_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nClasses")
+        for key, value in define_csvs_options.items():
+            print("{0}: {1}".format(key, value))
+        print("\nGenetic Options")
+        for key, value in genetic_options.items():
+            print("{0}: {1}".format(key, value))
+
+#experiments and functions for gendis
+
+def start_experiments(n_exp=1,real_data=False):
+    from tools import experiments
+    from tools import gendis
+    exp = experiments.Experiments()
+    settings = exp.get_setting()
+    if not os.path.exists("outputs"):
+        os.makedirs("outputs")
+    count = 0
+    while count < n_exp:
+        print("************************* Loop no: {0}  *************************".format(count + 1))
+        results = gendis.gendis_experiment(settings,real_data)
+        n_exp = results.index(max(results))
+        file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
+        file_output = open(file, 'a+')
+        print("max accuracy: {0} (exp no: {2}) at round :{1}".format(max(results), count, n_exp+1), file=file_output)
+        print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
+        count = count + 1
+        print("************************* End of Loop no: {0} *************************\n".format(count))
+
+#simple scale down given the sampling of fake data and the size of real dataset
 def scalling_down_simple(data,n_sample):
     data_size = len(data)
     labels = data.columns
@@ -124,7 +234,6 @@ def fitting_indexes(arr,new_size):
         i = i + 1
     return arr
 
-
 def scalling_down(data,n_sample,turn_sensitivity=35):
     if len(data) <= n_sample :
         return data
@@ -156,45 +265,6 @@ def scalling_down(data,n_sample,turn_sensitivity=35):
 
     return final_data[data_index]
 
-def destination(lat, lon, distance, bearing):
-    R = 6378.1  # Radius of the Earth
-    bearing = radians(bearing)
-    lat1 = radians(lat)  # Current lat point converted to radians
-    lon1 = radians(lon)  # Current long point converted to radians
-
-    lat2 = asin(sin(lat1) * cos(distance / R) + cos(lat1) * sin(distance / R) * cos(bearing))
-    lon2 = lon1 + atan2(sin(bearing) * sin(distance / R) * cos(lat1), cos(distance / R) - sin(lat1) * sin(lat2))
-
-    lat2 = degrees(lat2)
-    lon2 = degrees(lon2)
-    return lat2, lon2
-
-
-def timestamp_converter(data):
-    new_array = np.empty(shape=data.shape)
-    for idx, d in enumerate(data):
-        if isinstance(d, str):
-            new_array[idx] = int(pd.Timestamp(d).timestamp())
-        else:
-            return data
-    return new_array
-
-
-def get_movements():
-    return global_vals['movements']
-
-
-def set_movements(movements):
-    global_vals['movements'] = movements
-
-
-def standardize_data(x_train, x_test):
-    x_scaled_train = preprocessing.scale(x_train)
-    x_scaled_test = preprocessing .scale(x_test)
-
-    return x_scaled_train, x_scaled_test
-
-
 def angle_diff(data):
     if type(data) is np.ndarray:
         new_arr = np.array([])
@@ -213,144 +283,8 @@ def angle_diff(data):
     new_arr = np.reshape(new_arr, (data.shape[0], data.shape[1]-1))
     return new_arr
 
+def standardize_data(x_train, x_test):
+    x_scaled_train = preprocessing.scale(x_train)
+    x_scaled_test = preprocessing .scale(x_test)
 
-def statistics_results(results):
-    print(results)
-
-
-def print_genetic_param(gen_ext):
-    print("Starting fit in genetic extractor with:\n"
-          "population size:{0:d}\n"
-          "iterations: {1:d}\n"
-          "normed: {2}\n"
-          "noise_prob: {3}\n"
-          "add_shapelet_prob: {4}\n"
-          "remove_shapelet_prob: {5}\n"
-          "crossover_prob: {6}\n".format(gen_ext.population_size,
-                                         gen_ext.iterations,
-                                         gen_ext.normed,
-                                         gen_ext.add_noise_prob,
-                                         gen_ext.add_shapelet_prob,
-                                         gen_ext.remove_shapelet_prob,
-                                         gen_ext.crossover_prob))
-
-
-def print_data_generation(dict):
-    print("\nStarting the generator with attributes: \n"
-          "Original latitude: {first_lat}\n"
-          "Original longitude: {first_lon}\n"
-          "Initial bearing: {init_bearing}\n"
-          "Initial speed: {init_speed}\n"
-          "Number of samples: {samples}\n"
-          "Starting time of measurements: {timestamp}\n"
-          "With initial frequency of collected data: {freq} min\n"
-          "and hard reset of data: {reset_data}".format(**dict))
-
-
-def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options,file=None):
-    if file is not None:
-        for key, value in trajectory_generator_options.items():
-            print("{0}: {1}".format(key, value),file=file)
-        print("\nData Extractor settings",file=file)
-        for key, value in data_generation_options.items():
-            print("{0}: {1}".format(key, value),file=file)
-        print("\nClasses",file=file)
-        for key, value in define_csvs_options.items():
-            print("{0}: {1}".format(key, value),file=file)
-        print("\nGenetic Options",file=file)
-        for key, value in genetic_options.items():
-            print("{0}: {1}".format(key, value),file=file)
-    else:
-        for key, value in trajectory_generator_options.items():
-            print("{0}: {1}".format(key, value))
-        print("\nData Extractor settings")
-        for key, value in data_generation_options.items():
-            print("{0}: {1}".format(key, value))
-        print("\nClasses")
-        for key, value in define_csvs_options.items():
-            print("{0}: {1}".format(key, value))
-        print("\nGenetic Options")
-        for key, value in genetic_options.items():
-            print("{0}: {1}".format(key, value))
-
-def start_experiments(n_exp=1):
-    from tools import experiments
-    exp = experiments.Experiments()
-    settings = exp.get_setting()
-    if not os.path.exists("outputs"):
-        os.makedirs("outputs")
-    count = 0
-    while count < n_exp:
-        print("************************* Loop no: {0}  *************************".format(count + 1))
-        results = gendis_experiment(settings)
-        n_exp = results.index(max(results))
-        file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
-        file_output = open(file, 'a+')
-        print("max accuracy: {0} (exp no: {2}) at round :{1}".format(max(results), count, n_exp+1), file=file_output)
-        print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
-        count = count + 1
-        print("************************* End of Loop no: {0} *************************\n".format(count))
-
-def gendis_experiment(settings,real_data=False):
-    accuracy_results = []
-    from tools.data_extraction import DataExtractor
-    from tools.trajectory_generator import TrajectoryGenerator
-
-    for idx, sc in enumerate(settings):
-        print("####################### Start of Experiment no: {0}#######################\n".format(idx+1))
-
-        first = time.time()
-        tr_gen_options = sc["tr_gen_options"]
-        dt_gen_options = sc["dt_gen_options"]
-        df_csv_options = sc["df_csv_options"]
-        train_test_options = sc["train_test_options"]
-        gen_options = sc["gen_options"]
-        set_movements(sc['movements'])
-
-        # Create files if not created
-        tr_gen = TrajectoryGenerator(**tr_gen_options)
-        tr_gen.data_generation(**dt_gen_options)
-
-        # Read in the datafiles
-        dex = DataExtractor()
-        train_df, test_df = dex.train_test_dataframes(**train_test_options)
-        print("The train samples length is:{0}".format(len(train_df[0][0]) * len(train_df[0]) * len(train_df)))
-        print("The test samples length is:{0}\n".format(len(test_df[0][0]) * len(test_df[0]) * len(test_df)))
-        dex.define_csv(**df_csv_options)
-
-        x_train, y_train, x_test, y_test = dex.load_datasets()
-
-        if real_data:
-            print("Loading real data")
-            labels = ["TIMESTAMP","LAT","LON","HEADING"]
-            real_data =  pd.read_csv("/home/kapadais/Desktop/HUA Thesis/ptixiaki hua/data/route.csv")
-            real_data = real_data [labels]
-            real_data.sort_values('TIMESTAMP',inplace=True)
-            real_data=real_data.reset_index(drop=True)
-            data = scalling_down_windowed(real_data,train_test_options["split"])
-
-            y_test = np.array([0,1])
-            fdata=np.array(data["HEADING"].values).astype(int)
-            x_test=np.array([fdata,x_test[1]])
-
-        #print("standardized train and test data\n")
-        x_train, x_test = standardize_data(x_train, x_test)
-        #x_train = angle_diff(x_train)
-        #x_test = angle_diff(x_test)
-        genetic_extractor = GeneticExtractor(**gen_options)
-        #print_genetic_param(genetic_extractor)
-
-        genetic_extractor.fit(x_train, y_train)
-        distances_train = genetic_extractor.transform(x_train)
-        distances_test = genetic_extractor.transform(x_test)
-
-        lr = LogisticRegression()
-        lr.fit(distances_train, y_train)
-        # Print the accuracy score on the test set
-        accuracy_result = accuracy_score(y_test, lr.predict(distances_test))
-        print('Accuracy = {}'.format(accuracy_result))
-        accuracy_results.append(accuracy_result)
-        print("time passed on this experiment: {0} minutes".format((time.time() - first)/60))
-        print("####################### End of Experiment no: {0} #######################\n".format(idx+1))
-
-    return accuracy_results
+    return x_scaled_train, x_scaled_test
