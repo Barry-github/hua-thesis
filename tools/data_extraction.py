@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+from loguru import logger
 
 class DataExtractor:
     def __init__(self, train_samples=0.8):
@@ -17,7 +18,7 @@ class DataExtractor:
 
     def read_datasets(self):
         from tools.utils import get_movements
-        print("\nReading the data files", end='')
+        logger.info("Reading the data files")
         self.movements = get_movements()
         dataframes_first_movement = []
         dataframes_second_movement = []
@@ -46,7 +47,7 @@ class DataExtractor:
 
                     dataframes_second_movement.append(second)
 
-        print("....Done reading files")
+        logger.success("Done reading files")
         return dataframes_first_movement, dataframes_second_movement
 
     def train_test_dataframes(self, split=10):
@@ -71,7 +72,7 @@ class DataExtractor:
 
     def define_csv(self, ts_class):
         if DataExtractor.is_right_format(ts_class):
-            print("Creating {0:s} and {1:s} ".format("x_train.csv--y_train.csv", "x_test.csv--y_test.csv"), end='')
+            logger.info("Creating {0:s} and {1:s} ".format("x_train.csv--y_train.csv", "x_test.csv--y_test.csv"))
             class_list = ts_class
             x_train_file = "x_train.csv"
             y_train_file = "y_train.csv"
@@ -96,7 +97,7 @@ class DataExtractor:
 
             np.savetxt(y_train_file, y_ds, delimiter=",", fmt='%i')
             x_csv.close()
-            print("...Done with train.csv", end=' ')
+            logger.success("Done with train.csv")
 
             # for test.csv
             x_ds = []
@@ -117,19 +118,19 @@ class DataExtractor:
 
             np.savetxt(y_test_file, y_ds, delimiter=",", fmt='%i')
             x_csv.close()
-            print("...Done with test.csv")
+            logger.info("Done with test.csv")
         else:
-            print("...wrong format for requested attributes. needed a option from [Bearing,Speed,Distance]")
+            logger.error("wrong format for requested attributes. needed a option from [Bearing,Speed,Distance]")
 
     @staticmethod
     def load_datasets():
 
-        print("Loading the csv files to the appropriate train and test arrays(nparrays)", end='')
+        logger.info("Loading the csv files to the appropriate train and test arrays(nparrays)")
         x_train = np.loadtxt("x_train.csv", delimiter=",", dtype=int)
         y_train = np.loadtxt("y_train.csv", delimiter=",", dtype=int)
         x_test = np.loadtxt("x_test.csv", delimiter=",", dtype=int)
         y_test = np.loadtxt("y_test.csv", delimiter=",", dtype=int)
-        print("...Done")
+        logger.success("Done")
         return x_train, y_train, x_test, y_test
 
     def set_sz_listdir(self, listdir_sz):

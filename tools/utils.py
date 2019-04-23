@@ -1,11 +1,13 @@
-from math import degrees, atan2, asin, sin, cos, radians, sqrt
-from random import random, randint, choice
-from sklearn import preprocessing
-from statistics import mean
 import datetime
 import os
 import pandas as pd
 import numpy as np
+from loguru import logger
+from math import degrees, atan2, asin, sin, cos, radians, sqrt
+from random import random, randint, choice
+from sklearn import preprocessing
+from statistics import mean
+
 
 global_vals = {'movements': {'first_movement': ['step_up_right'], 'second_movement': ['random']}
             }
@@ -27,7 +29,7 @@ def random_init_bearing(bearing):
 
 
 def bearing_noise(bearing):
-    return random_noise(bearing, limit_up=10)
+    return random_noise(bearing, limit_up=3)
 
 
 def speed_noise(speed):
@@ -92,32 +94,34 @@ def statistics_results(results):
 
 
 def print_genetic_param(gen_ext):
-    print("Starting fit in genetic extractor with:\n"
-          "population size:{0:d}\n"
-          "iterations: {1:d}\n"
-          "normed: {2}\n"
-          "noise_prob: {3}\n"
-          "add_shapelet_prob: {4}\n"
-          "remove_shapelet_prob: {5}\n"
-          "crossover_prob: {6}\n".format(gen_ext.population_size,
-                                         gen_ext.iterations,
-                                         gen_ext.normed,
-                                         gen_ext.add_noise_prob,
-                                         gen_ext.add_shapelet_prob,
-                                         gen_ext.remove_shapelet_prob,
-                                         gen_ext.crossover_prob))
+    message = ("Starting fit in genetic extractor with:\n"
+          +"population size:{0:d}\n"
+          +"iterations: {1:d}\n"
+          +"normed: {2}\n"
+          +"noise_prob: {3}\n"
+          +"add_shapelet_prob: {4}\n"
+          +"remove_shapelet_prob: {5}\n"
+          +"crossover_prob: {6}\n")
+    return message.format(gen_ext.population_size,
+    gen_ext.iterations,
+    gen_ext.normed,
+    gen_ext.add_noise_prob,
+    gen_ext.add_shapelet_prob,
+    gen_ext.remove_shapelet_prob,
+    gen_ext.crossover_prob)
 
 
 def print_data_generation(dict):
-    print("\nStarting the generator with attributes: \n"
-          "Original latitude: {first_lat}\n"
-          "Original longitude: {first_lon}\n"
-          "Initial bearing: {init_bearing}\n"
-          "Initial speed: {init_speed}\n"
-          "Number of samples: {samples}\n"
-          "Starting time of measurements: {timestamp}\n"
-          "With initial frequency of collected data: {freq} min\n"
-          "and hard reset of data: {reset_data}".format(**dict))
+    message= ("\nStarting the generator with attributes: \n"
+    +"Original latitude: {first_lat}\n"
+    +"Original longitude: {first_lon}\n"
+    +"Initial bearing: {init_bearing}\n"
+    +"Initial speed: {init_speed}\n"
+    +"Number of samples: {samples}\n"
+    +"Starting time of measurements: {timestamp}\n"
+    +"With initial frequency of collected data: {freq} min\n"
+    +"and hard reset of data: {reset_data}")
+    return message.format(**dict)
 
 
 def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options,file=None):
@@ -157,15 +161,12 @@ def start_experiments(n_exp=1,real_data=False):
         os.makedirs("outputs")
     count = 0
     while count < n_exp:
-        print("************************* Loop no: {0}  *************************".format(count + 1))
+        logger.info("Experiment no:{0}".format(count + 1))
         results = gendis.gendis_experiment(settings,real_data)
         n_exp = results.index(max(results))
-        file = "outputs/gendis_test_output_"+datetime.datetime.today().strftime("%d_%m")+".txt"
-        file_output = open(file, 'a+')
-        print("max accuracy: {0} (exp no: {2}) at round :{1}".format(max(results), count, n_exp+1), file=file_output)
-        print("\nThe max accuracy: {0} at: {1}".format(max(results), n_exp+1), file=file_output)
+        logger.info("The max accuracy:{0} at setting:{1}".format(max(results), n_exp+1))
         count = count + 1
-        print("************************* End of Loop no: {0} *************************\n".format(count))
+        logger.info("End of Experiment no:{0}".format(count))
 
 #simple scale down given the sampling of fake data and the size of real dataset
 def scalling_down_simple(data,n_sample):

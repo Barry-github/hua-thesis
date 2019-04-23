@@ -5,7 +5,7 @@ import pandas as pd
 from random import shuffle, choice
 from pandas.tseries.offsets import Minute
 from tools.utils import bearing_noise, random_init_bearing, random_turn, speed_noise, calc_distance, destination, get_movements, print_data_generation
-
+from loguru import logger
 
 class TrajectoryGenerator:
     import tools.utils
@@ -56,7 +56,7 @@ class TrajectoryGenerator:
                                                                                  bearing=last_bearing,
                                                                                  time=self.freq)
                 if lat2 == 0 and lon2 == 0 and timestamp == 0 and tempdata == 0:
-                    print("Invalid Pattern")
+                    logger.error("Invalid Pattern")
                     break
                 last_location[0] = lat2
                 last_location[1] = lon2
@@ -82,17 +82,21 @@ class TrajectoryGenerator:
                    set_bearing_noise=True,
                    set_speed_noise=True):
         data = []
-        if set_bearing_noise:
-            bearing = bearing_noise((bearing + turn) % 360)
-        else:
-            bearing = (bearing + turn) % 360
         if set_speed_noise:
             speed = speed_noise(speed)
         last_location = [first_lat, first_lon]
         loops = choice(loops)
+        if set_bearing_noise:
+            bearing = bearing_noise((bearing + turn) % 360)
+        else:
+            bearing = (bearing + turn) % 360
         count = 1
         while count <= loops:
             #time = freq_sampling_noise(time)
+            if set_bearing_noise:
+                bearing = bearing_noise((bearing) % 360)
+            else:
+                bearing = (bearing) % 360
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -118,21 +122,22 @@ class TrajectoryGenerator:
                   set_bearing_noise=True,
                   set_speed_noise=True):
         data = []
+        if set_speed_noise:
+            speed = speed_noise(speed)
 
+        last_location = [first_lat, first_lon]
+        loops = choice(loops)
         if set_bearing_noise:
             bearing = bearing_noise((bearing - turn) % 360)
         else:
             bearing = (bearing - turn) % 360
-
-        if set_speed_noise:
-            speed = speed_noise(speed)
-
-        last_location = [first_lat, first_lon]
-        loops = choice(loops)
-
         count = 1
         while count <= loops:
             #time = freq_sampling_noise(time)
+            if set_bearing_noise:
+                bearing = bearing_noise((bearing) % 360)
+            else:
+                bearing = (bearing) % 360
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -146,16 +151,33 @@ class TrajectoryGenerator:
             count = count + 1
         return data, timestamp, last_location[0], last_location[1], bearing
 
-    def go_straight(self, timestamp, first_lat, first_lon, speed, bearing, time, turn=0, loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],set_speed_noise=True):
+    def go_straight(self,
+                    timestamp,
+                    first_lat,
+                    first_lon,
+                    speed,
+                    bearing,
+                    time,
+                    turn=0,
+                    loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],
+                    set_bearing_noise=True,
+                    set_speed_noise=True):
         data = []
-        bearing = bearing_noise((bearing - turn) % 360)
         if set_speed_noise:
             speed = speed_noise(speed)
         last_location = [first_lat, first_lon]
         loops = choice(loops)
+        if set_bearing_noise:
+            bearing = bearing_noise((bearing - turn) % 360)
+        else:
+            bearing = (bearing - turn) % 360
         count = 1
         while count <= loops:
             # time = freq_sampling_noise(time)
+            if set_bearing_noise:
+                bearing = bearing_noise((bearing) % 360)
+            else:
+                bearing = (bearing) % 360
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -169,16 +191,33 @@ class TrajectoryGenerator:
             count = count + 1
         return data, timestamp, last_location[0], last_location[1], bearing
 
-    def go_backwards(self, timestamp, first_lat, first_lon, speed, bearing, time, turn=180, loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],set_speed_noise=True):
+    def go_backwards(self,
+                     timestamp,
+                     first_lat,
+                     first_lon,
+                     speed,
+                     bearing,
+                     time,
+                     turn=180,
+                     loops=[2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],
+                     set_bearing_noise=True,
+                     set_speed_noise=True):
         data = []
-        bearing = bearing_noise((bearing - turn) % 360)
         if set_speed_noise:
             speed = speed_noise(speed)
         last_location = [first_lat, first_lon]
         loops = choice(loops)
+        if set_bearing_noise:
+            bearing = bearing_noise((bearing - turn) % 360)
+        else:
+            bearing = (bearing - turn) % 360
         count = 1
         while count <= loops:
             # time = freq_sampling_noise(time)
+            if set_bearing_noise:
+                bearing = bearing_noise((bearing) % 360)
+            else:
+                bearing = (bearing) % 360
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -345,7 +384,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
-                                                                set_bearing_noise=False,
+                                                                set_bearing_noise=True,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -356,7 +395,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
-                                                                set_bearing_noise=False,
+                                                                set_bearing_noise=True,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -367,7 +406,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
-                                                                 set_bearing_noise=False,
+                                                                 set_bearing_noise=True,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -378,7 +417,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
-                                                                 set_bearing_noise=False,
+                                                                 set_bearing_noise=True,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
@@ -393,7 +432,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
-                                                                 set_bearing_noise=False,
+                                                                 set_bearing_noise=True,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -404,7 +443,7 @@ class TrajectoryGenerator:
                                                                  bearing=bearing,
                                                                  time=time,
                                                                  loops=loops,
-                                                                 set_bearing_noise=False,
+                                                                 set_bearing_noise=True,
                                                                  set_speed_noise=False)
         data.extend(tempdata)
 
@@ -415,7 +454,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
-                                                                set_bearing_noise=False,
+                                                                set_bearing_noise=True,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
 
@@ -426,7 +465,7 @@ class TrajectoryGenerator:
                                                                 bearing=bearing,
                                                                 time=time,
                                                                 loops=loops,
-                                                                set_bearing_noise=False,
+                                                                set_bearing_noise=True,
                                                                 set_speed_noise=False)
         data.extend(tempdata)
         return data, timestamp, lat, lon, bearing
@@ -576,54 +615,54 @@ class TrajectoryGenerator:
         return data, timestamp, lat, lon, bearing
 
     def data_generation(self, filename="", n_test=10):
-        #print_data_generation(self.__dict__)
+        logger.info(print_data_generation(self.__dict__))
         filename = "data/" + filename
         if not os.path.exists("data"):
-            print("\nCreate directory \'data\' ")
+            logger.info("Create directory \'data\' ")
             os.makedirs("data")
             if len(os.listdir("data")) < n_test:
                 first_movement = self.movements['first_movement']
                 second_movement = self.movements['second_movement']
                 for idx, d in enumerate(first_movement):
-                    print("now creating data for movement: {0:s}".format(d))
+                    logger.info("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
                         self.init_bearing = random_init_bearing(self.init_bearing)
                         self.generator(pattern=d, filename=filename+"first_movement_"+str(idx)+"_" +d + "_"+str(i))
                 for idx, d in enumerate(second_movement):
-                    print("now creating data for movement: {0:s}".format(d))
+                    logger.info("now creating data for movement: {0:s}".format(d))
                     for i in range(n_test):
                         self.init_bearing = random_init_bearing(self.init_bearing)
                         self.generator(pattern=d, filename=filename+"second_movement_"+str(idx)+"_" + d + "_"+str(i))
             else:
-                print("Done with generator")
+                logger.success("Done with generator")
                 return None
         else:
-            print("\nData already exists")
+            logger.warning("Data already exists")
             if os.path.isdir("data"):
                 if len(os.listdir("data")) < n_test:
-                    print("Not enough files. creating more")
+                    logger.warning("Not enough files. creating more")
                     first_movement = self.movements['first_movement']
                     second_movement = self.movements['second_movement']
                     for idx, d in enumerate(first_movement):
-                        print("now creating data for movement: {0:s}".format(d))
+                        logger.info("now creating data for movement: {0:s}".format(d))
                         for i in range(n_test):
                             self.init_bearing = random_init_bearing(self.init_bearing)
                             self.generator(pattern=d,
                                            filename=filename + "first_movement_" + str(idx) + "_" + d + "_" + str(i))
                     for idx, d in enumerate(second_movement):
-                        print("now creating data for movement: {0:s}".format(d))
+                        logger.info("now creating data for movement: {0:s}".format(d))
                         for i in range(n_test):
                             self.init_bearing = random_init_bearing(self.init_bearing)
                             self.generator(pattern=d,
                                            filename=filename + "second_movement_" + str(idx) + "_" + d + "_" + str(i))
                 else:
-                    print("Done with generator")
+                    logger.success("Done with generator")
                     return None
             else:
-                print("Done with generator")
+                logger.success("Done with generator")
                 return None
 
-        print("Done with generator")
+        logger.success("Done with generator")
 
     @staticmethod
     def reset_data():
