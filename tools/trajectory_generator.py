@@ -7,8 +7,8 @@ from pandas.tseries.offsets import Minute
 from tools.utils import bearing_noise, random_init_bearing, random_turn, speed_noise, calc_distance, destination, get_movements, print_data_generation
 from loguru import logger
 
+
 class TrajectoryGenerator:
-    import tools.utils
     def __init__(self,
                  first_lat=37.295493,
                  first_lon=23.824322,
@@ -92,7 +92,7 @@ class TrajectoryGenerator:
             bearing = (bearing + turn) % 360
         count = 1
         while count <= loops:
-            #time = freq_sampling_noise(time)
+            # time = freq_sampling_noise(time)
             if set_bearing_noise:
                 bearing = bearing_noise((bearing) % 360)
             else:
@@ -133,7 +133,7 @@ class TrajectoryGenerator:
             bearing = (bearing - turn) % 360
         count = 1
         while count <= loops:
-            #time = freq_sampling_noise(time)
+            # time = freq_sampling_noise(time)
             if set_bearing_noise:
                 bearing = bearing_noise((bearing) % 360)
             else:
@@ -217,7 +217,7 @@ class TrajectoryGenerator:
             if set_bearing_noise:
                 bearing = bearing_noise((bearing) % 360)
             else:
-                bearing = (bearing) % 360
+                bearing = bearing % 360
             timestamp = timestamp + Minute(time)
             distance = calc_distance(speed, time=time)
             lat, lon = destination(lat=last_location[0], lon=last_location[1], distance=distance, bearing=bearing)
@@ -306,7 +306,7 @@ class TrajectoryGenerator:
     def spiral_movement_left(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
         turn = random_turn(min=45, max=80)
-        loops = [2,2,2,2,2,2,2,3,3,3]
+        loops = [2, 2, 2, 2, 2, 2, 2, 3, 3, 3]
         tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
                                                                 first_lat=first_lat,
                                                                 first_lon=first_lon,
@@ -321,7 +321,7 @@ class TrajectoryGenerator:
     def spiral_movement_right(self, timestamp, first_lat, first_lon, speed, bearing, time):
         data = []
         turn = random_turn(min=45, max=80)
-        loops = [2,2,2,2,2,2,2,3,3,3]
+        loops = [2, 2, 2, 2, 2, 2, 2, 3, 3, 3]
         tempdata, timestamp, lat, lon, bearing = self.turn_right(timestamp=timestamp,
                                                                  first_lat=first_lat,
                                                                  first_lon=first_lon,
@@ -480,36 +480,36 @@ class TrajectoryGenerator:
             turn = random_turn(min=110, max=130)
             loops = [radius]
             tempdata, timestamp, lat, lon, bearing = self.go_straight(timestamp=timestamp,
-                                                                     first_lat=lat,
-                                                                     first_lon=lon,
-                                                                     speed=speed,
-                                                                     bearing=bearing,
-                                                                     time=time,
-                                                                     loops=loops,
-                                                                     set_speed_noise=False)
+                                                                      first_lat=lat,
+                                                                      first_lon=lon,
+                                                                      speed=speed,
+                                                                      bearing=bearing,
+                                                                      time=time,
+                                                                      loops=loops,
+                                                                      set_speed_noise=False)
 
             data.extend(tempdata)
 
             tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
-                                                                     first_lat=lat,
-                                                                     first_lon=lon,
-                                                                     speed=speed,
-                                                                     bearing=bearing,
-                                                                     time=time,
-                                                                     loops=loops,
-                                                                     turn=turn,
-                                                                     set_speed_noise=False)
+                                                                    first_lat=lat,
+                                                                    first_lon=lon,
+                                                                    speed=speed,
+                                                                    bearing=bearing,
+                                                                    time=time,
+                                                                    loops=loops,
+                                                                    turn=turn,
+                                                                    set_speed_noise=False)
 
             data.extend(tempdata)
             tempdata, timestamp, lat, lon, bearing = self.turn_left(timestamp=timestamp,
-                                                                     first_lat=lat,
-                                                                     first_lon=lon,
-                                                                     speed=speed,
-                                                                     bearing=bearing,
-                                                                     time=time,
-                                                                     loops=loops,
-                                                                     turn=turn,
-                                                                     set_speed_noise=False)
+                                                                    first_lat=lat,
+                                                                    first_lon=lon,
+                                                                    speed=speed,
+                                                                    bearing=bearing,
+                                                                    time=time,
+                                                                    loops=loops,
+                                                                    turn=turn,
+                                                                    set_speed_noise=False)
 
             data.extend(tempdata)
 

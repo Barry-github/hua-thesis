@@ -12,6 +12,7 @@ from statistics import mean
 global_vals = {'movements': {'first_movement': ['step_up_right'], 'second_movement': ['random']}
             }
 
+
 def get_movements():
     return global_vals['movements']
 
@@ -19,7 +20,8 @@ def get_movements():
 def set_movements(movements):
     global_vals['movements'] = movements
 
-#trajectory generator's functions
+
+# trajectory generator's functions
 def random_turn(min=0, max=90):
     return randint(min, max)
 
@@ -62,7 +64,6 @@ def random_noise(x, limit_up, limit_down=0):
             return abs(x - randint(limit_down, limit_up))
 
 
-
 def destination(lat, lon, distance, bearing):
     R = 6378.1  # Radius of the Earth
     bearing = radians(bearing)
@@ -87,21 +88,21 @@ def timestamp_converter(data):
     return new_array
 
 
-#printing functions
+# printing functions
 
 def statistics_results(results):
     print(results)
 
 
 def print_genetic_param(gen_ext):
-    message = ("Starting fit in genetic extractor with:\n"
-          +"population size:{0:d}\n"
-          +"iterations: {1:d}\n"
-          +"normed: {2}\n"
-          +"noise_prob: {3}\n"
-          +"add_shapelet_prob: {4}\n"
-          +"remove_shapelet_prob: {5}\n"
-          +"crossover_prob: {6}\n")
+    message = ("Starting fit in genetic extractor with:\n"+
+               "population size:{0:d}\n"+
+               "iterations: {1:d}\n"+
+               "normed: {2}\n"+
+               "noise_prob: {3}\n"+
+               "add_shapelet_prob: {4}\n"+
+               "remove_shapelet_prob: {5}\n"+
+               "crossover_prob: {6}\n")
     return message.format(gen_ext.population_size,
     gen_ext.iterations,
     gen_ext.normed,
@@ -111,17 +112,17 @@ def print_genetic_param(gen_ext):
     gen_ext.crossover_prob)
 
 
-def print_data_generation(dict):
-    message= ("\nStarting the generator with attributes: \n"
-    +"Original latitude: {first_lat}\n"
-    +"Original longitude: {first_lon}\n"
-    +"Initial bearing: {init_bearing}\n"
-    +"Initial speed: {init_speed}\n"
-    +"Number of samples: {samples}\n"
-    +"Starting time of measurements: {timestamp}\n"
-    +"With initial frequency of collected data: {freq} min\n"
-    +"and hard reset of data: {reset_data}")
-    return message.format(**dict)
+def print_data_generation(dct):
+    message = ("\n Starting the generator with attributes: \n" +
+               "Original latitude: {first_lat}\n" +
+               "Original longitude: {first_lon}\n" +
+               "Initial bearing: {init_bearing}\n" +
+               "Initial speed: {init_speed}\n" +
+               "Number of samples: {samples}\n" +
+               "Starting time of measurements: {timestamp}\n" +
+               "With initial frequency of collected data: {freq} min\n" +
+               "and hard reset of data: {reset_data}")
+    return message.format(**dct)
 
 
 def print_settings(trajectory_generator_options,data_generation_options,define_csvs_options,genetic_options,file=None):
@@ -150,26 +151,37 @@ def print_settings(trajectory_generator_options,data_generation_options,define_c
         for key, value in genetic_options.items():
             print("{0}: {1}".format(key, value))
 
-#experiments and functions for gendis
+
+# experiments and functions for gendis
 
 def start_experiments(n_exp=1,real_data=False):
     from tools import experiments
     from tools import gendis
     exp = experiments.Experiments()
     settings = exp.get_setting()
-    if not os.path.exists("outputs"):
-        os.makedirs("outputs")
+    final_results = []
+    final_results_short = []
+    logger.add("logs/log_{time:DD_MM}.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", rotation="100 MB")
+    logger.add("logs/log_final_results.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", filter=lambda record: "special" in record["extra"])
     count = 0
     while count < n_exp:
+
         logger.info("Experiment no:{0}".format(count + 1))
-        results = gendis.gendis_experiment(settings,real_data)
+        results = gendis.gendis_experiment(settings, real_data)
         n_exp = results.index(max(results))
-        logger.info("The max accuracy:{0} at setting:{1}".format(max(results), n_exp+1))
+        max_acc = max(results)
+        logger.info("The max accuracy:{0} at setting:{1}".format(max_acc, settings[n_exp]['message']))
+        final_results_short.append([max_acc, n_exp])
+        final_results.append(results)
         count = count + 1
         logger.info("End of Experiment no:{0}".format(count))
+    logger.bind(special=True).debug("Final Results for calculations")
+    logger.bind(special=True).debug(final_results)
+    logger.bind(special=True).debug(final_results_short)
 
-#simple scale down given the sampling of fake data and the size of real dataset
-def scalling_down_simple(data,n_sample):
+
+# simple scale down given the sampling of fake data and the size of real dataset
+def scalling_down_simple(data, n_sample):
     data_size = len(data)
     labels = data.columns
     sampling_offset = int(data_size/n_sample)
@@ -181,28 +193,30 @@ def scalling_down_simple(data,n_sample):
 
     return pd.DataFrame(new_data,columns=labels)
 
-#if a neighbor sample has already being used then return false or True
-def check_sampling(x,sampling,data_index):
+
+# if a neighbor sample has already being used then return false or True
+def check_sampling(x, sampling, data_index):
     i = 1
     sampling_acc = True
     down_limit = (x[1]-sampling)
     up_limit = (x[1]+sampling)
     while i<=sampling:
-        if 0 <=down_limit and up_limit < len(data_index):
+        if 0 <= down_limit and up_limit < len(data_index):
             if (data_index[x[1]-i] == True) or (data_index[x[1]+i] == True):
                 sampling_acc = False
                 break
         i = i + 1
     return sampling_acc
 
-#return the bearing differance and the distance between two samples
+
+# return the bearing differance and the distance between two samples
 def dist_and_bearing_diff(data):
     all_distances = []
     bearing_diff = []
-    data_size=len(data)
+    data_size = len(data)
     i = 0
-    while i<data_size:
-        if i + 1 >=data_size:
+    while i < data_size:
+        if i + 1 >= data_size:
             break
         bearing_1, bearing_2 = data["HEADING"].iloc[i], data["HEADING"].iloc[i+1]
         bearing_diff.append([abs(bearing_2 - bearing_1),i])
@@ -211,31 +225,32 @@ def dist_and_bearing_diff(data):
         i = i +1
     return bearing_diff, all_distances
 
-#get more samples to fit to generated data sampling size
-def fitting_indexes(arr,new_size):
+
+# get more samples to fit to generated data sampling size
+def fitting_indexes(arr, new_size):
     i = 0
     r_arr = []
-    while i <len(arr):
-        if i+1 >=len(arr):
+    while i < len(arr):
+        if i+1 >= len(arr):
             break
         r_arr.append(arr[i+1]-arr[i])
         i = i + 1
 
     mean_space = mean(r_arr)
     i = 0
-    while i<len(arr)<new_size:
-        if i+1 >=len(arr):
+    while i < len(arr) < new_size:
+        if i+1 >= len(arr):
             break
         diff = arr[i+1]-arr[i]
         if mean_space < diff:
             step = int(diff/2)
             new_index = arr[i] + step
-            arr.insert(i+1,new_index)
+            arr.insert(i+1, new_index)
             i = i + 1
         i = i + 1
-    return arr
 
-def scalling_down(data,n_sample,turn_sensitivity=35):
+
+def scale_down(data, n_sample, turn_sensitivity=35):
     if len(data) <= n_sample :
         return data
     size_correction = int(len(data) / n_sample) * n_sample
@@ -249,22 +264,23 @@ def scalling_down(data,n_sample,turn_sensitivity=35):
     final_data = pd.DataFrame(data,columns=labels)
     final_data.reset_index(drop=True)
 
-    #find the number of bearing differance above the turn sensitivity
-    bearing_diff , all_distances = dist_and_bearing_diff(final_data)
+    # find the number of bearing difference above the turn sensitivity
+    bearing_diff, all_distances = dist_and_bearing_diff(final_data)
     mean_dist = mean(all_distances)
     for idx, x in enumerate(bearing_diff):
-        sampling_acc = check_sampling(x,sampling,data_index)
+        sampling_acc = check_sampling(x, sampling, data_index)
         if (x[0] > turn_sensitivity) and (all_distances[idx] > mean_dist/2) and sampling_acc:
             data_index[x[1]] = True
             temp_idx.append(x[1])
     for x in temp_idx:
         while n_sample > len(temp_idx):
-            final_index=fitting_indexes(temp_idx,n_sample)
+            fitting_indexes(temp_idx, n_sample)
 
         for x in temp_idx:
-            data_index[x]=True
+            data_index[x] = True
 
     return final_data[data_index]
+
 
 def angle_diff(data):
     if type(data) is np.ndarray:
@@ -283,6 +299,7 @@ def angle_diff(data):
             new_arr = np.append(new_arr, temp_arr).astype(int)
     new_arr = np.reshape(new_arr, (data.shape[0], data.shape[1]-1))
     return new_arr
+
 
 def standardize_data(x_train, x_test):
     x_scaled_train = preprocessing.scale(x_train)

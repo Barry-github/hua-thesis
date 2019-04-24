@@ -3,6 +3,7 @@ import numpy as np
 import os
 from loguru import logger
 
+
 class DataExtractor:
     def __init__(self, train_samples=0.8):
         self.dataframes_first_movement, self.dataframes_second_movement = self.read_datasets()
