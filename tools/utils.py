@@ -165,7 +165,6 @@ def start_experiments(n_exp=1,real_data=False):
     logger.add("logs/log_final_results.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", filter=lambda record: "special" in record["extra"])
     count = 0
     while count < n_exp:
-
         logger.info("Experiment no:{0}".format(count + 1))
         results = gendis.gendis_experiment(settings, real_data)
         n_exp = results.index(max(results))
