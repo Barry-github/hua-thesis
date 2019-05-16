@@ -17,7 +17,7 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         self.movements = movements
-        # test_experiment
+        '''# test_experiment
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
@@ -58,10 +58,10 @@ class Experiments:
                          self.movements[0],
                          message="Only for test purposes 1",
                          purpose="test 2")
-
+        '''
         # optimisation settings experiments
         # first setting  100 TS 5 iterations
-        '''self.add_setting(self.tr_gen_options[0],
+        self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
                          self.train_test_options[0],
@@ -142,7 +142,7 @@ class Experiments:
                          self.train_test_options[0],
                          self.gen_options[3],
                          self.movements[2],
-                         message="ninth setting 150 TS 20 iterations spiral"
+                         message="ninth setting 150 TS 20 iterations spiral",
                          purpose="classes difference")
         
         # tenth  setting 150 TS 20 iterations expanding square - random
@@ -214,7 +214,7 @@ class Experiments:
                          self.movements[16],
                          message="sixteenth setting 150 TS 20 iterations sector_pattern-step ",
                          purpose="classes vs steps")
-        '''
+
 
         # not yet sure about these settings
         '''                     
@@ -276,6 +276,7 @@ class Experiments:
 
     @staticmethod
     def options_data():
+        '''
         # test options_data
         tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": False}]
         dt_gen_options = [{"n_test": 10}]
@@ -388,5 +389,5 @@ class Experiments:
                       'second_movement': ['step_up_right']},
                      {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 17 two sector_pattern-step classes
                       'second_movement': ['step_up_right', 'step_down_right']},
-                     ]'''
+                     ]
         return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements
