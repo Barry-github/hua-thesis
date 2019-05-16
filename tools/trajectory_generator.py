@@ -573,7 +573,7 @@ class TrajectoryGenerator:
         pattern = choice(m)
         #loops = [30, 40]
         if pattern == "turn_right" or pattern == "turn_left":
-            turn = random_turn(min=20, max=50)
+            turn = random_turn(min=5, max=20)
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
                                                                                        timestamp,
                                                                                        first_lat,
@@ -616,11 +616,11 @@ class TrajectoryGenerator:
 
     def data_generation(self, filename="", n_test=10):
         logger.info(print_data_generation(self.__dict__))
-        filename = "data/" + filename
-        if not os.path.exists("data"):
-            logger.info("Create directory \'data\' ")
-            os.makedirs("data")
-            if len(os.listdir("data")) < n_test:
+        filename = "generator_data/" + filename
+        if not os.path.exists("generator_data"):
+            logger.info("Create directory \'generator_data\' ")
+            os.makedirs("generator_data")
+            if len(os.listdir("generator_data")) < n_test:
                 first_movement = self.movements['first_movement']
                 second_movement = self.movements['second_movement']
                 for idx, d in enumerate(first_movement):
@@ -638,8 +638,8 @@ class TrajectoryGenerator:
                 return None
         else:
             logger.warning("Data already exists")
-            if os.path.isdir("data"):
-                if len(os.listdir("data")) < n_test:
+            if os.path.isdir("generator_data"):
+                if len(os.listdir("generator_data")) < n_test:
                     logger.warning("Not enough files. creating more")
                     first_movement = self.movements['first_movement']
                     second_movement = self.movements['second_movement']
@@ -666,6 +666,6 @@ class TrajectoryGenerator:
 
     @staticmethod
     def reset_data():
-        shutil.rmtree("data") if os.path.isdir("data") else None
+        shutil.rmtree("generator_data") if os.path.isdir("generator_data") else None
         for x in os.listdir(os.getcwd()):
             os.remove(os.path.basename(x)) if x.endswith(".csv") else None

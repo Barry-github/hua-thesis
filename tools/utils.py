@@ -1,12 +1,10 @@
-import datetime
-import os
 import pandas as pd
 import numpy as np
 from loguru import logger
 from math import degrees, atan2, asin, sin, cos, radians, sqrt
 from random import random, randint, choice
 from sklearn import preprocessing
-from statistics import mean
+from statistics import mean ,mode
 
 
 global_vals = {'movements': {'first_movement': ['step_up_right'], 'second_movement': ['random']}
@@ -90,8 +88,75 @@ def timestamp_converter(data):
 
 # printing functions
 
-def statistics_results(results):
-    print(results)
+def statistics_results(n_exp, results, times):
+    from tools import experiments
+    exp = experiments.Experiments()
+    settings = exp.get_setting()
+    exp_types = set()
+    types_idx = []
+    types_settings = []
+    for x in settings:
+        exp_types.add(x["purpose"])
+    for x in exp_types:
+        temp1 = []
+        temp2 = []
+        for idx, sett in enumerate(settings):
+            if x == sett["purpose"]:
+                temp1.append(idx)
+                temp2.append(sett["message"])
+        types_idx.append(temp1)
+        types_settings.append(temp2)
+    final_results = []
+    for p_type in types_idx:
+        temp = []
+        for r in p_type:
+            for x in results:
+                temp.append(x[r])
+        final_results.append(temp)
+    for idx, x in enumerate(exp_types):
+        res = final_results[idx]
+        mean_val = mean(res)
+        max_val = max(res)
+        min_val = min(res)
+        indx_max = res.index(max(res))
+        indx_min = res.index(min(res))
+        max_setting = ""
+        min_setting = ""
+        count = -1
+        i = 0
+        max_results = []
+        min_results = []
+        while i < len(res):
+            if i % n_exp == 0:
+                count = count + 1
+            if i == indx_max:
+                max_setting=types_settings[idx][count]
+                max_results.append(max_setting)
+            if i == indx_min:
+                min_setting = types_settings[idx][count]
+                min_results.append(min_setting)
+            i = i + 1
+        max_occ = mode(max_results)
+        min_occ = mode(min_results)
+        total_max_occ = [[k, max_results.count(x)]for k in set(max_results)]
+        total_min_occ = [[k, min_results.count(x)] for k in set(min_results)]
+        logger.info("Type of experiment: {0} \n"
+                    "Mean value : {1}\n"
+                    "Max value: {2} with setting; {4}\n"
+                    "Min value: {3} with setting {5}\n"
+                    "Best setting for this type of experiment is {6}\n"
+                    "Worst setting for this type of experiment is {7}\n"
+                    "Total occurrences of best settings {8}\n"
+                    "Total occurrences of worst settings {9} ". format(x,
+                                                                       mean_val,
+                                                                       max_val,
+                                                                       min_val,
+                                                                       max_setting,
+                                                                       min_setting,
+                                                                       max_occ,
+                                                                       min_occ,
+                                                                       total_max_occ,
+                                                                       total_min_occ))
 
 
 def print_genetic_param(gen_ext):
@@ -154,29 +219,35 @@ def print_settings(trajectory_generator_options,data_generation_options,define_c
 
 # experiments and functions for gendis
 
-def start_experiments(n_exp=1,real_data=False):
+def start_experiments(no_exp=1, real_data=False):
     from tools import experiments
-    from tools import gendis
+    from tools import gendis_experiment
     exp = experiments.Experiments()
     settings = exp.get_setting()
     final_results = []
     final_results_short = []
+    final_results_time = []
     logger.add("logs/log_{time:DD_MM}.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", rotation="100 MB")
     logger.add("logs/log_final_results.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", filter=lambda record: "special" in record["extra"])
     count = 0
-    while count < n_exp:
-        logger.info("Experiment no:{0}".format(count + 1))
-        results = gendis.gendis_experiment(settings, real_data)
+    while count < no_exp:
+        count = count + 1
+        logger.info("Experiment no:{0}".format(count))
+        exp_results = gendis_experiment.gendis_experiment(settings, real_data)
+        results = exp_results["accuracy_results"]
+        times = exp_results["times"]
         n_exp = results.index(max(results))
         max_acc = max(results)
         logger.info("The max accuracy:{0} at setting:{1}".format(max_acc, settings[n_exp]['message']))
         final_results_short.append([max_acc, n_exp])
         final_results.append(results)
-        count = count + 1
+        final_results_time.append(times)
         logger.info("End of Experiment no:{0}".format(count))
+
     logger.bind(special=True).debug("Final Results for calculations")
     logger.bind(special=True).debug(final_results)
     logger.bind(special=True).debug(final_results_short)
+    statistics_results(no_exp, final_results, final_results_time)
 
 
 # simple scale down given the sampling of fake data and the size of real dataset

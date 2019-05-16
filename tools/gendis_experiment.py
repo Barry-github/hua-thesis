@@ -14,6 +14,8 @@ np.random.seed(1337)  # Random seed for reproducibility
 
 def gendis_experiment(settings, real_data=False, angle_diff_mode=False):
     accuracy_results = []
+    times = []
+    exp_results = {"accuracy_results": accuracy_results, "times": times}
     for idx, sc in enumerate(settings):
         logger.info("Start of setting {0}".format(sc["message"]))
         first = time.time()
@@ -26,7 +28,6 @@ def gendis_experiment(settings, real_data=False, angle_diff_mode=False):
 
         # Create files if not created
         tr_gen = TrajectoryGenerator(**tr_gen_options)
-        # TODO: create proper logger message for data generation settings
         tr_gen.data_generation(**dt_gen_options)
 
         # Read in the datafiles
@@ -40,16 +41,16 @@ def gendis_experiment(settings, real_data=False, angle_diff_mode=False):
 
         if real_data:
             logger.info("Loading real data")
-            labels = ["TIMESTAMP","LAT","LON","HEADING"]
+            labels = ["TIMESTAMP", "LAT", "LON", "HEADING"]
             real_data = pd.read_csv("/home/kotsos/Desktop/hua/infos/data/route.csv")
             real_data = real_data[labels]
-            real_data.sort_values('TIMESTAMP',inplace=True)
+            real_data.sort_values('TIMESTAMP', inplace=True)
             real_data = real_data.reset_index(drop=True)
-            data = scale_down(real_data,train_test_options["split"])
+            data = scale_down(real_data, train_test_options["split"])
 
-            y_test = np.array([0,1])
+            y_test = np.array([0, 1])
             fdata=np.array(data["HEADING"].values).astype(int)
-            x_test=np.array([fdata,x_test[1]])
+            x_test=np.array([fdata, x_test[1]])
 
         if angle_diff_mode:
             logger.info("Angle_Diff mode on: Computing angle(bearing) difference")
@@ -71,8 +72,10 @@ def gendis_experiment(settings, real_data=False, angle_diff_mode=False):
         # Print the accuracy score on the test set
         accuracy_result = accuracy_score(y_test, lr.predict(distances_test))
         logger.info('Accuracy = {}'.format(accuracy_result))
+        time_passed = (time.time() - first)/60
+        times.append(time_passed)
         accuracy_results.append(accuracy_result)
-        logger.info("time passed on this experiment: {0} minutes".format((time.time() - first)/60))
+        logger.info("time passed on this experiment: {0} minutes".format(time_passed))
         logger.info("End of setting no:{0}".format(idx+1))
 
-    return accuracy_results
+    return exp_results

@@ -23,9 +23,9 @@ class DataExtractor:
         self.movements = get_movements()
         dataframes_first_movement = []
         dataframes_second_movement = []
-        if os.path.exists("data"):
-            if os.path.isdir("data"):
-                self.listdir = os.listdir("data")
+        if os.path.exists("generator_data"):
+            if os.path.isdir("generator_data"):
+                self.listdir = os.listdir("generator_data")
                 self.set_sz_listdir(len(self.listdir))
                 for idx, d in enumerate(self.movements['first_movement']):
                     first = []
@@ -33,7 +33,7 @@ class DataExtractor:
                         if file.endswith(".csv"):
                             check_file = "first_movement_" + str(idx)
                             if file.__contains__(d) and file.__contains__(check_file):
-                                file = "data/" + file
+                                file = "generator_data/" + file
                                 first.append(pd.read_csv(file))
 
                     dataframes_first_movement.append(first)
@@ -43,7 +43,7 @@ class DataExtractor:
                         if file.endswith(".csv"):
                             check_file = "second_movement_"+str(idx)
                             if file.__contains__(d) and file.__contains__(check_file):
-                                file = "data/" + file
+                                file = "generator_data/" + file
                                 second.append(pd.read_csv(file))
 
                     dataframes_second_movement.append(second)
