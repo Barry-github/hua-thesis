@@ -137,26 +137,27 @@ def statistics_results(n_exp, results, times):
                 min_results.append(min_setting)
             i = i + 1
         max_occ = mode(max_results)
+
         min_occ = mode(min_results)
         total_max_occ = [[k, max_results.count(x)]for k in set(max_results)]
         total_min_occ = [[k, min_results.count(x)] for k in set(min_results)]
-        logger.info("Type of experiment: {0} \n"
-                    "Mean value : {1}\n"
-                    "Max value: {2} with setting; {4}\n"
-                    "Min value: {3} with setting {5}\n"
-                    "Best setting for this type of experiment is {6}\n"
-                    "Worst setting for this type of experiment is {7}\n"
-                    "Total occurrences of best settings {8}\n"
-                    "Total occurrences of worst settings {9} ". format(x,
-                                                                       mean_val,
-                                                                       max_val,
-                                                                       min_val,
-                                                                       max_setting,
-                                                                       min_setting,
-                                                                       max_occ,
-                                                                       min_occ,
-                                                                       total_max_occ,
-                                                                       total_min_occ))
+        logger.bind(results=True).info("Type of experiment: {0} \n"
+                                       "Mean value : {1}\n"
+                                       "Max value: {2} with setting; {4}\n"
+                                       "Min value: {3} with setting {5}\n"
+                                       "Best setting for this type of experiment is {6}\n"
+                                       "Worst setting for this type of experiment is {7}\n"
+                                       "Total occurrences of best settings {8}\n"
+                                       "Total occurrences of worst settings {9} ". format(x,
+                                                                                          mean_val,
+                                                                                          max_val,
+                                                                                          min_val,
+                                                                                          max_setting,
+                                                                                          min_setting,
+                                                                                          max_occ,
+                                                                                          min_occ,
+                                                                                          total_max_occ,
+                                                                                          total_min_occ))
 
 
 def print_genetic_param(gen_ext):
@@ -229,6 +230,8 @@ def start_experiments(no_exp=1, real_data=False):
     final_results_time = []
     logger.add("logs/log_{time:DD_MM}.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", rotation="100 MB")
     logger.add("logs/log_final_results.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", filter=lambda record: "special" in record["extra"])
+    logger.add("logs/results.log", format="{time:DD-MM-YY | hh:mm:s} <level>{message}</level>", filter=lambda record: "results" in record["extra"])
+
     count = 0
     while count < no_exp:
         count = count + 1
