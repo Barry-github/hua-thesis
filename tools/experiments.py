@@ -17,6 +17,8 @@ class Experiments:
         self.train_test_options = train_test_options
         self.gen_options = gen_options
         self.movements = movements
+        '''
+        # test 
         self.add_setting(self.tr_gen_options[0],
                          self.dt_gen_options[0],
                          self.df_csv_options[0],
@@ -214,7 +216,7 @@ class Experiments:
                          message="sixteenth setting 150 TS 20 iterations sector_pattern-step ",
                          purpose="classes vs steps")
 
-
+        '''
         # not yet sure about these settings
                              
         # ninth setting 150 TS 15 iterations two step classes for movements
@@ -275,6 +277,7 @@ class Experiments:
 
     @staticmethod
     def options_data():
+        '''
         # test options_data
         tr_gen_options = [{"samples": 25, "freq": 3, "reset_data": False}]
         dt_gen_options = [{"n_test": 10}]
@@ -388,6 +391,5 @@ class Experiments:
                      {'first_movement': ['sector_pattern_right', 'creeping_line_left'], # 17 two sector_pattern-step classes
                       'second_movement': ['step_up_right', 'step_down_right']},
                      ]
-                             '''
 
         return tr_gen_options, dt_gen_options, df_csv_options, train_test_options, gen_options, movements
