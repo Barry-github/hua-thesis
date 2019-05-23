@@ -571,25 +571,30 @@ class TrajectoryGenerator:
              'go_straight']
         shuffle(m)
         pattern = choice(m)
-        #loops = [30, 40]
+        loops = [2,3]
         if pattern == "turn_right" or pattern == "turn_left":
-            turn = random_turn(min=5, max=20)
+            turn = random_turn(min=5, max=10)
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
-                                                                                       timestamp,
-                                                                                       first_lat,
-                                                                                       first_lon,
-                                                                                       speed,
-                                                                                       bearing,
-                                                                                       time,
-                                                                                       turn,)
+											timestamp=timestamp,
+                                                                     		        first_lat=first_lat,
+					                                                first_lon=first_lon,
+					                                                speed=speed,
+					                                                bearing=bearing,
+					                                                time=time,
+					                                                loops=loops,
+					                                                turn=turn,
+					                                                set_speed_noise=False)
         else:
             data, timestamp, lat, lon, bearing = getattr(TrajectoryGenerator, pattern)(self,
-                                                                                       timestamp,
-                                                                                       first_lat,
-                                                                                       first_lon,
-                                                                                       speed,
-                                                                                       bearing,
-                                                                                       time,)
+											timestamp=timestamp,
+                                                                     		        first_lat=first_lat,
+					                                                first_lon=first_lon,
+					                                                speed=speed,
+					                                                bearing=bearing,
+					                                                time=time,
+					                                                loops=loops,
+					                                                turn=0,
+					                                                set_speed_noise=False)
 
         return data, timestamp, lat, lon, bearing
 
