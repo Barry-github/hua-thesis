@@ -300,30 +300,31 @@ def dist_and_bearing_diff(data):
 
 
 # get more samples to fit to generated data sampling size
-def fitting_indexes(arr, new_size):
+def fitting_indexes(arr,new_size):
     i = 0
     r_arr = []
-    while i < len(arr):
-        if i+1 >= len(arr):
+    while i <len(arr):
+        if i+1 >=len(arr):
             break
         r_arr.append(arr[i+1]-arr[i])
         i = i + 1
-
+    if len(r_arr) <= 0:
+        return arr
     mean_space = mean(r_arr)
-    i = 0
-    while i < len(arr) < new_size:
-        if i+1 >= len(arr):
+    i = 0 
+    while i<len(arr)<new_size:
+        if i+1 >=len(arr):
             break
         diff = arr[i+1]-arr[i]
-        if mean_space < diff:
+        if mean_space <= diff:
             step = int(diff/2)
             new_index = arr[i] + step
-            arr.insert(i+1, new_index)
+            arr.insert(i+1,new_index)
             i = i + 1
         i = i + 1
+    return arr
 
-
-def scale_down(data, n_sample, turn_sensitivity=35):
+def scale_down(data,n_sample,turn_sensitivity=30):
     if len(data) <= n_sample :
         return data
     size_correction = int(len(data) / n_sample) * n_sample
@@ -332,28 +333,26 @@ def scale_down(data, n_sample, turn_sensitivity=35):
     data_index = [False for i in range(data_size)]
     sampling = int((int(data_size/n_sample) * 0.25))
     labels = data.columns
-
-    temp_idx = []
+    
+    temp_idx = [] 
     final_data = pd.DataFrame(data,columns=labels)
     final_data.reset_index(drop=True)
-
-    # find the number of bearing difference above the turn sensitivity
-    bearing_diff, all_distances = dist_and_bearing_diff(final_data)
+    
+    #find the number of bearing differance above the turn sensitivity
+    bearing_diff , all_distances = dist_and_bearing_diff(final_data)
     mean_dist = mean(all_distances)
     for idx, x in enumerate(bearing_diff):
-        sampling_acc = check_sampling(x, sampling, data_index)
+        sampling_acc = check_sampling(x,sampling,data_index)
         if (x[0] > turn_sensitivity) and (all_distances[idx] > mean_dist/2) and sampling_acc:
             data_index[x[1]] = True
             temp_idx.append(x[1])
+    while n_sample > len(temp_idx) and len(temp_idx) > 1 :
+        fitting_indexes(temp_idx,n_sample)
+
     for x in temp_idx:
-        while n_sample > len(temp_idx):
-            fitting_indexes(temp_idx, n_sample)
-
-        for x in temp_idx:
-            data_index[x] = True
-
+        data_index[x]=True
+        
     return final_data[data_index]
-
 
 def angle_diff(data):
     if type(data) is np.ndarray:
