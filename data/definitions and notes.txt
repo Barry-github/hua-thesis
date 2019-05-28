@@ -1,0 +1,5 @@
+Definition 1: Time Series. A time series T = t1,...,tm is an ordered set of m real-valued variables.
+Data points t1,...,tm are typically arranged by temporal order, spaced at equal time intervals. 
+
+Definition 2: Subsequence. Given a time series T of length m, \
+a subsequence S of T is a sampling of length l ? m of contiguous positions from T, that is, S = tp,...,tp+l-1, for 1? p ? m – l + 1.  
