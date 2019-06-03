@@ -110,6 +110,7 @@ dependencies:
     - pox==0.2.4
     - ppft==1.6.4.8
     - pyparsing==2.3.0
+    - rdp==0.8
     - scikit-learn==0.20.1
     - scipy==1.1.0
     - sklearn==0.0

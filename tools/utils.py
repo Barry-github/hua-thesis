@@ -375,6 +375,6 @@ def angle_diff(data):
 
 def standardize_data(x_train, x_test):
     x_scaled_train = preprocessing.scale(x_train)
-    x_scaled_test = preprocessing .scale(x_test)
+    x_scaled_test = preprocessing.scale(x_test)
 
     return x_scaled_train, x_scaled_test
